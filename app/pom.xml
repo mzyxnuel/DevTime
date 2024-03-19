@@ -10,17 +10,11 @@
 
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <maven.compiler.source>21</maven.compiler.source>
-      <maven.compiler.target>21</maven.compiler.target>
+      <maven.compiler.source>17</maven.compiler.source>
+      <maven.compiler.target>17</maven.compiler.target>
    </properties>
 
    <dependencies>
-
-      <dependency>
-         <groupId>org.glassfish.jersey.examples</groupId>
-         <artifactId>jaxb</artifactId>
-         <version>3.1.5</version>
-      </dependency>
       <dependency>
          <groupId>io.github.cdimascio</groupId>
          <artifactId>dotenv-java</artifactId>

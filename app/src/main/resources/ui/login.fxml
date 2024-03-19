@@ -14,11 +14,6 @@
    <children>
       <AnchorPane prefHeight="1000.0" prefWidth="1728.0">
          <children>
-            <ImageView fitHeight="70.0" fitWidth="70.0" layoutX="18.0" layoutY="69.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../icons/berrybank.png" />
-               </image>
-            </ImageView>
             <Button fx:id="login" layoutX="744.0" layoutY="584.0" mnemonicParsing="false" onMouseClicked="#login" prefHeight="47.0" prefWidth="320.0" text="Login" AnchorPane.bottomAnchor="486.0" AnchorPane.leftAnchor="744.0" AnchorPane.rightAnchor="664.0" AnchorPane.topAnchor="584.0">
                <font>
                   <Font size="24.0" />
