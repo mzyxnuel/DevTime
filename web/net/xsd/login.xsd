@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="Login">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="email" type="emailAddress" />
+            <xs:element name="password" type="xs:string" />
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:simpleType name="emailAddress">
+      <xs:restriction base="xs:string">
+         <xs:pattern value="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"/>
+      </xs:restriction>
+   </xs:simpleType>
+</xs:schema>
