@@ -5,7 +5,9 @@ import java.net.http.HttpResponse;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import timecode.model.HttpHandler;
+import timecode.model.Login;
+import timecode.model.net.HttpHandler;
+import timecode.model.net.JAXB;
 import timecode.view.App;
 import timecode.view.components.PopUp;
 
@@ -24,18 +26,20 @@ public class LoginController {
 
       if (passwordField.length() < 8)
          new PopUp("Password is too weak, at least 8 character", stage).show(stage);
+      else {
+         Login login = new Login(emailField, passwordField);
+         String xml = new JAXB(Login.class).marshal(login);
 
-      //TODO: xml parser
-      String content = "";
+         HttpResponse<String> response = http.http(
+            "POST",
+            "/auth/login",
+            xml
+         );
 
-      HttpResponse<String> response = http.http(
-         "POST",
-         "/login",
-         content
-      );
+         // xsd validation
+         System.out.println(response.body());
 
-      //xsd validation
-      // System.out.println(response.body());
+      }
    }
 
    @FXML

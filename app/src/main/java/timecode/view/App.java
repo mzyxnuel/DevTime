@@ -8,7 +8,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import timecode.model.FxmlManager;
+import timecode.view.local.FxmlManager;
 
 public class App extends Application {
    private static Group root;

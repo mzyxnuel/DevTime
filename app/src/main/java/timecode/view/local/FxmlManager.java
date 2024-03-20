@@ -1,4 +1,4 @@
-package timecode.model;
+package timecode.view.local;
 
 import java.io.IOException;
 

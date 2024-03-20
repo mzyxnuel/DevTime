@@ -1,4 +1,4 @@
-package timecode.model;
+package timecode.model.local;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import io.github.cdimascio.dotenv.DotenvException;

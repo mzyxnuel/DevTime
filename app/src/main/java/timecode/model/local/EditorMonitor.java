@@ -1,4 +1,4 @@
-package timecode.model;
+package timecode.model.local;
 
 import java.util.List;
 
