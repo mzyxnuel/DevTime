@@ -11,3 +11,8 @@ function req($xsd) {
       //TODO risposta xml che invalida la richiesta
    }
 }
+
+function res($xml) {
+   header("Content-Type: application/xml; charset=utf-8");
+   echo $response = "<?xml version='1.0' encoding='UTF-8'?>" . $xml;
+}
