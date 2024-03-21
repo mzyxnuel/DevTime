@@ -7,7 +7,6 @@
 
 package timecode.model;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,18 +32,18 @@ import jakarta.xml.bind.annotation.XmlType;
  *         <element name="end_time" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         <element name="project_name" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         <element name="os" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         <element name="files">
+ *         <element name="files_container">
  *           <complexType>
  *             <complexContent>
  *               <restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                 <sequence>
- *                   <element name="file" maxOccurs="unbounded">
+ *                   <element name="file_container" maxOccurs="unbounded">
  *                     <complexType>
  *                       <complexContent>
  *                         <restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                           <sequence>
  *                             <element name="file_name" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *                             <element name="rows_count" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+ *                             <element name="rows_count" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *                           </sequence>
  *                         </restriction>
  *                       </complexContent>
@@ -70,7 +69,7 @@ import jakarta.xml.bind.annotation.XmlType;
     "endTime",
     "projectName",
     "os",
-    "files"
+    "filesContainer"
 })
 @XmlRootElement(name = "Activity")
 public class Activity {
@@ -85,16 +84,19 @@ public class Activity {
     protected String projectName;
     @XmlElement(required = true)
     protected String os;
-    @XmlElement(required = true)
-    protected Activity.Files files;
+    @XmlElement(name = "files_container", required = true)
+    protected Activity.FilesContainer filesContainer;
 
-    public Activity(int idUser, long startTime, long endTime, String projectName, String os, Files files) {
+    public Activity() {
+    }
+
+    public Activity(int idUser, long startTime, long endTime, String projectName, String os, FilesContainer filesContainer) {
         this.idUser = idUser;
         this.startTime = startTime;
         this.endTime = endTime;
         this.projectName = projectName;
         this.os = os;
-        this.files = files;
+        this.filesContainer = filesContainer;
     }
 
     /**
@@ -194,27 +196,27 @@ public class Activity {
     }
 
     /**
-     * Gets the value of the files property.
+     * Gets the value of the filesContainer property.
      *
      * @return
      *     possible object is
-     *     {@link Activity.Files }
+     *     {@link Activity.FilesContainer }
      *
      */
-    public Activity.Files getFiles() {
-        return files;
+    public Activity.FilesContainer getFilesContainer() {
+        return filesContainer;
     }
 
     /**
-     * Sets the value of the files property.
+     * Sets the value of the filesContainer property.
      *
      * @param value
      *     allowed object is
-     *     {@link Activity.Files }
+     *     {@link Activity.FilesContainer }
      *
      */
-    public void setFiles(Activity.Files value) {
-        this.files = value;
+    public void setFilesContainer(Activity.FilesContainer value) {
+        this.filesContainer = value;
     }
 
 
@@ -228,13 +230,13 @@ public class Activity {
      *   <complexContent>
      *     <restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       <sequence>
-     *         <element name="file" maxOccurs="unbounded">
+     *         <element name="file_container" maxOccurs="unbounded">
      *           <complexType>
      *             <complexContent>
      *               <restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *                 <sequence>
      *                   <element name="file_name" type="{http://www.w3.org/2001/XMLSchema}string"/>
-     *                   <element name="rows_count" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+     *                   <element name="rows_count" type="{http://www.w3.org/2001/XMLSchema}int"/>
      *                 </sequence>
      *               </restriction>
      *             </complexContent>
@@ -250,43 +252,51 @@ public class Activity {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "file"
+        "fileContainer"
     })
-    public static class Files {
+    public static class FilesContainer {
 
-        @XmlElement(required = true)
-        protected List<Activity.Files.File> file;
+        @XmlElement(name = "file_container", required = true)
+        protected List<Activity.FilesContainer.FileContainer> fileContainer;
+
+        public FilesContainer() {
+            this.fileContainer = new ArrayList<Activity.FilesContainer.FileContainer>();
+        }
 
         /**
-         * Gets the value of the file property.
+         * Gets the value of the fileContainer property.
          *
-         * <p>This accessor method returns a reference to the live list,
+         * <p>
+         * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the file property.</p>
+         * This is why there is not a <CODE>set</CODE> method for the fileContainer
+         * property.
+         * </p>
          *
          * <p>
          * For example, to add a new item, do as follows:
          * </p>
+         *
          * <pre>
-         * getFile().add(newItem);
+         * getFileContainer().add(newItem);
          * </pre>
          *
          *
          * <p>
          * Objects of the following type(s) are allowed in the list
-         * {@link Activity.Files.File }
+         * {@link Activity.FilesContainer.FileContainer }
          * </p>
          *
          *
          * @return
-         *     The value of the file property.
+         *         The value of the fileContainer property.
          */
-        public List<Activity.Files.File> getFile() {
-            if (file == null) {
-                file = new ArrayList<>();
+        public List<Activity.FilesContainer.FileContainer> getFileContainer() {
+            if (fileContainer == null) {
+                fileContainer = new ArrayList<>();
             }
-            return this.file;
+            return this.fileContainer;
         }
 
 
@@ -301,7 +311,7 @@ public class Activity {
          *     <restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
          *       <sequence>
          *         <element name="file_name" type="{http://www.w3.org/2001/XMLSchema}string"/>
-         *         <element name="rows_count" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+         *         <element name="rows_count" type="{http://www.w3.org/2001/XMLSchema}int"/>
          *       </sequence>
          *     </restriction>
          *   </complexContent>
@@ -315,18 +325,23 @@ public class Activity {
             "fileName",
             "rowsCount"
         })
-        public static class File {
+        public static class FileContainer {
 
             @XmlElement(name = "file_name", required = true)
             protected String fileName;
-            @XmlElement(name = "rows_count", required = true)
-            protected BigInteger rowsCount;
+            @XmlElement(name = "rows_count")
+            protected int rowsCount;
+
+            public FileContainer(String fileName, int rowsCount) {
+                this.fileName = fileName;
+                this.rowsCount = rowsCount;
+            }
 
             /**
              * Gets the value of the fileName property.
              *
-             * @return
-             *     possible object is
+             *         urn
+             *         possible object is
              *     {@link String }
              *
              */
@@ -349,27 +364,29 @@ public class Activity {
             /**
              * Gets the value of the rowsCount property.
              *
-             * @return
-             *     possible object is
-             *     {@link BigInteger }
-             *
              */
-            public BigInteger getRowsCount() {
+            public int getRowsCount() {
                 return rowsCount;
             }
 
             /**
              * Sets the value of the rowsCount property.
              *
-             * @param value
-             *     allowed object is
-             *     {@link BigInteger }
-             *
              */
-            public void setRowsCount(BigInteger value) {
+            public void setRowsCount(int value) {
                 this.rowsCount = value;
             }
 
+        }
+
+
+        public void add(FileContainer fileContainer2) {
+            this.fileContainer.add(fileContainer2);
+        }
+
+
+        public void addAll(FilesContainer filesContainer2) {
+            this.fileContainer.addAll(filesContainer2.getFileContainer());
         }
 
     }

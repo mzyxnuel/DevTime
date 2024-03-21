@@ -20,13 +20,9 @@ public class JAXB {
       }
    }
 
-   public String marshal(Object obj) {
+   public String marshal(Object obj) throws JAXBException {
       StringWriter xml = new StringWriter();
-      try {
-         marshaller.marshal(obj, xml);
-      } catch (JAXBException e) {
-         e.printStackTrace();
-      }
+      marshaller.marshal(obj, xml);
       return xml.toString();
    }
 }
