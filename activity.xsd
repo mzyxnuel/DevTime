@@ -1,0 +1,27 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="Activity">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="id_user" type="xs:int" />
+            <xs:element name="start_time" type="xs:long" />
+            <xs:element name="end_time" type="xs:long" />
+            <xs:element name="project_name" type="xs:string" />
+            <xs:element name="os" type="xs:string" />
+            <xs:element name="files">
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element name="file" maxOccurs="unbounded">
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="file_name" type="xs:string" />
+                              <xs:element name="rows_count" type="xs:integer" />
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+</xs:schema>
