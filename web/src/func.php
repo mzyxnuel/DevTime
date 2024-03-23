@@ -1,6 +1,54 @@
 <?php
+    // database connection
     function db() {
-        return new PDO("mysql:host=localhost;dbname=timecode", "root", "");
+        $user = "root";
+        $password = "";
+        $db = "timecode";
+        $host = "localhost";
+        $port = 3306;
+
+        return new PDO("mysql:host=$host; dbname=$db; port=$port", $user, $password);
+    }
+
+    // return [id_user: email exists - null: email doesnt exist]
+    function check_user($email){
+        $conn = db();
+        try{
+            $res = $conn->prepare("SELECT id_user FROM users WHERE email = :email");
+            $res->bindParam(':email', $email);
+            $res->execute();
+            $result = $res->fetch(PDO::FETCH_ASSOC);
+            return $result ? $result['id_user'] : null;
+        }catch(Exception $e){
+            die("check_user");
+        }
+    }
+
+    // return [true: psw is correct - false: psw isnt correct]
+    function check_psw($id_user, $password){
+        $conn = db();
+        try{
+            $stmt = $conn->prepare("SELECT psw FROM users WHERE id_user = :id_user");
+            $stmt->bindParam(':id_user', $id_user);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if($result && password_verify($password, $result['psw'])) {
+                return true;
+            }
+        }catch(Exception $e){
+            die("check_psw");
+        }
+        return false;
+    }
+
+    // return [id_user: user exists - null: user doesnt exist]
+    function login($email, $password){
+        $id_user = check_user($email);
+        if(isset($id_user)){
+            if(!check_psw($id_user, $password))
+                return null;
+        }
+        return $id_user;
     }
 
     function check_pr($pr_name){
@@ -10,11 +58,11 @@
         }catch(Exception $e){
             die("check_pr");
         }
-        if(mysqli_num_rows($res) > 0){ // TODO non so se conviene usare count(*)
-            $row = $res->fetch_assoc(); // TODO pls usa pdo che non ha problemi di versione a differenza di mysqli
+        if(mysqli_num_rows($res) > 0){
+            $row = $res->fetch_assoc();
             return $row['id_project'];
         }
-        return -1;
+        return null;
     }
 
     function insert($id_user, $unix_start, $unix_end, $pr_name, $files_name, $os){
