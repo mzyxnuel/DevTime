@@ -55,7 +55,7 @@
 
         if(!isset($id_user)){
             try{
-                $query = $conn->prepare("INSERT INTO users VALUES(NULL, :name, :surname, :email, :psw)");
+                $query = $conn->prepare("INSERT INTO users VALUES(NULL, :name, :surname, :email, :psw, NOW())");
                 $query->bindParam(':name', $name);
                 $query->bindParam(':surname', $surname);
                 $query->bindParam(':email', $email);
@@ -70,50 +70,81 @@
         return null;
     }
 
-    function check_pr($pr_name){
-        $conn = db();
-        try{
-            $res = $conn->query("SELECT * FROM projects WHERE name = '$pr_name'");
-        }catch(Exception $e){
-            die("check_pr");
-        }
-        if(mysqli_num_rows($res) > 0){
-            $row = $res->fetch_assoc();
-            return $row['id_project'];
-        }
-        return null;
-    }
-
-    function insert($id_user, $unix_start, $unix_end, $pr_name, $files_name, $os){
+    // return [ ]
+    function insert($id_user, $start, $end, $pr_name, $os, $files_name){
         $id_project = check_pr($pr_name);
-        if($id_project == -1)
+        if(!isset($id_project))
             $id_project = project($pr_name);
-        $date = date("d-m-Y", $unix_start);
-        $start = date("Y-m-d H:i:s", $unix_start);
-        $end = date("Y-m-d H:i:s", $unix_end);
+        user_project($id_user, $id_project);
 
-        activity($id_user, $id_project, $date, $start, $end);
+        $date = date("d-m-Y", $start);
+        $unix_time = $end - $start;
+        $h = floor($unix_time / 3600);
+        $m = floor(($unix_time % 3600) / 60);
+        $s = $unix_time % 60;
+        $time = sprintf('%02d:%02d:%02d', $h, $m, $s);
+
+        activity($id_user, $id_project, $date, $time);
         activity_language();
     }
 
-    // insert a new project in the database
+    // return [id_project: project exists - null: project doesnt exist]
+    function check_pr($pr_name){
+        $conn = db();
+        try{
+            $query = $conn->prepare("SELECT id_project FROM projects WHERE name = :name");
+            $query->bindParam(':name', $pr_name);
+            $query->execute();
+            $result = $query->fetch(PDO::FETCH_ASSOC);
+            return $result ? $result['id_project'] : null;
+        }catch(Exception $e){
+            die("check_pr");
+        }
+    }
+
+    // return [id_project]
     function project($pr_name){
         $conn = db();
         try{
-            $conn->query("INSERT INTO projects VALUES(NULL, '$pr_name')");
-            return $conn->insert_id;
-        }catch(Exception $e){ die("project"); }
+            $query = $conn->prepare("INSERT INTO projects VALUES(NULL, :name)");
+            $query->bindParam(':name', $pr_name);
+            $query->execute();
+            return $conn->lastInsertId();
+        }catch(Exception $e){
+            die("project");
+        }
     }
 
-    // insert a new activity in the database
-    function activity($id_user, $id_project, $date, $start, $end){
+    // return [ ]
+    function user_project($id_user, $id_project){
         $conn = db();
         try{
-            $conn->query("INSERT INTO activities VALUES(NULL, $date, TIMEDIFF($end, $start), $id_user, $id_project)");
-        }catch(Exception $e){ die("activity"); }
+            $query = $conn->prepare("INSERT IGNORE INTO users_projects VALUES(:id_user, :id_project)");
+            $query->bindParam(':id_user', $id_user);
+            $query->bindParam(':id_project', $id_project);
+            $query->execute();
+        }catch(Exception $e){
+            die("user_project");
+        }
     }
 
-    function activity_language($id_activity, $files_name){
+    // return [ ]
+    function activity($id_user, $id_project, $date, $time){
+        $conn = db();
+        try{
+            $query = $conn->prepare("INSERT INTO projects VALUES(NULL, :date, :time, :id_user, :id_project)");
+            $query->bindParam(':date', $date);
+            $query->bindParam(':time', $time);
+            $query->bindParam(':id_user', $id_user);
+            $query->bindParam(':id_project', $id_project);
+            $query->execute();
+        }catch(Exception $e){
+            die("activity");
+        }
+    }
+
+    // return [ ]
+    function activities_languages($id_activity, $files_name){
 
     }
 ?>

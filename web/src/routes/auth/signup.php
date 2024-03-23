@@ -9,21 +9,16 @@
    $password = $content->password;
    $psw = password_hash($password, PASSWORD_BCRYPT);
 
-   try{
-      $xml = new SimpleXMLElement('<response/>');
+   $xml = new SimpleXMLElement('<response/>');
 
-      $id_user = signup($name, $surname, $email, $psw);
-      if(isset($id_user)){
-         $xml->addChild('state', 'signup/success');
-         $xml->addChild('id_user', $id_user);
-      }else{
-         $xml->addChild('state', 'signup/error');
-      }
-
-      header("Content-Type: application/xml; charset=utf-8");
-      echo $xml->asXML();
-   }catch(Exception $e){
-      die("signup error");
+   $id_user = signup($name, $surname, $email, $psw);
+   if(isset($id_user)){
+      $xml->addChild('state', 'signup/success');
+      $xml->addChild('id_user', $id_user);
+   }else{
+      $xml->addChild('state', 'signup/error');
    }
 
+   header("Content-Type: application/xml; charset=utf-8");
+   echo $xml->asXML();
 ?>
