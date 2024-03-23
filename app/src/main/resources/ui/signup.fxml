@@ -8,21 +8,21 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox alignment="CENTER" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1000.0" prefWidth="1728.0" spacing="20.0" xmlns="http://javafx.com/javafx/13" xmlns:fx="http://javafx.com/fxml/1" fx:controller="timecode.control.auth.SignUpController">
+<VBox alignment="CENTER" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1000.0" prefWidth="1728.0" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="timecode.control.auth.SignUpController">
    <children>
       <AnchorPane prefHeight="1289.0" prefWidth="1948.0">
          <children>
-            <Button layoutX="744.0" layoutY="584.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="320.0" text="Sign Up" AnchorPane.bottomAnchor="486.0" AnchorPane.leftAnchor="744.0" AnchorPane.rightAnchor="664.0" AnchorPane.topAnchor="584.0">
+            <Button layoutX="744.0" layoutY="584.0" mnemonicParsing="false" onMouseClicked="#signup" prefHeight="47.0" prefWidth="320.0" text="Sign Up" AnchorPane.bottomAnchor="486.0" AnchorPane.leftAnchor="744.0" AnchorPane.rightAnchor="664.0" AnchorPane.topAnchor="584.0">
                <font>
                   <Font size="24.0" />
                </font>
             </Button>
-            <PasswordField layoutX="553.0" layoutY="459.0" prefHeight="47.0" prefWidth="320.0" promptText="Password">
+            <PasswordField fx:id="password" layoutX="553.0" layoutY="459.0" prefHeight="47.0" prefWidth="320.0" promptText="Password">
                <font>
                   <Font size="24.0" />
                </font>
             </PasswordField>
-            <TextField layoutX="554.0" layoutY="379.0" prefHeight="47.0" prefWidth="320.0" promptText="Email">
+            <TextField fx:id="email" layoutX="554.0" layoutY="379.0" prefHeight="47.0" prefWidth="320.0" promptText="Email">
                <font>
                   <Font size="24.0" />
                </font>
@@ -37,12 +37,12 @@
                   <Font size="18.0" />
                </font>
             </Text>
-            <TextField layoutX="934.0" layoutY="379.0" prefHeight="47.0" prefWidth="320.0" promptText="Name">
+            <TextField fx:id="name" layoutX="934.0" layoutY="379.0" prefHeight="47.0" prefWidth="320.0" promptText="Name">
                <font>
                   <Font size="24.0" />
                </font>
             </TextField>
-            <TextField layoutX="934.0" layoutY="458.0" prefHeight="47.0" prefWidth="320.0" promptText="Surname">
+            <TextField fx:id="surname" layoutX="934.0" layoutY="458.0" prefHeight="47.0" prefWidth="320.0" promptText="Surname">
                <font>
                   <Font size="24.0" />
                </font>

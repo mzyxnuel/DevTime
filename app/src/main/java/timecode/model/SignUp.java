@@ -55,6 +55,16 @@ public class SignUp {
     @XmlElement(required = true)
     protected String password;
 
+    public SignUp() {
+    }
+
+    public SignUp(String name, String surname, String email, String password) {
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.password = password;
+    }
+
     /**
      * Gets the value of the name property.
      *
