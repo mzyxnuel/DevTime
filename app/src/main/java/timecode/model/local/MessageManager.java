@@ -6,16 +6,12 @@ import timecode.view.components.PopUp;
 
 public class MessageManager {
    private Stage stage = App.getStage();
+   private String text = "";
+   private boolean success = false;
 
    public MessageManager(String code) {
-      String text = "";
-      boolean success = false;
-
       String status = code.substring(0, code.indexOf("/"));
       String type = code.substring(code.indexOf("/") + 1);
-
-      System.out.println(status);
-      System.out.println(type);
 
       switch (status) {
          case "success":
@@ -47,6 +43,4 @@ public class MessageManager {
       }
       new PopUp(text, success, stage).show(stage);
    }
-
-
 }

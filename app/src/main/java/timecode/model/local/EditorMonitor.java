@@ -56,9 +56,9 @@ public class EditorMonitor implements Runnable {
 
                actReg = false;
             } catch (URISyntaxException | IOException | InterruptedException e) {
-               new MessageManager("error/connection");
+               System.out.println("error/connection");
             } catch (JAXBException e) {
-               new MessageManager("error/parsing");
+               System.out.println("error/parsing");
             }
          }
 
