@@ -8,7 +8,7 @@ import javafx.stage.Popup;
 import javafx.stage.Window;
 
 public class PopUp extends Popup {
-   public PopUp(String text, Window owner) {
+   public PopUp(String text, boolean success, Window owner) {
       Rectangle background = new Rectangle(200, 30, Color.RED);
       StackPane content = new StackPane();
       content.setStyle( "-fx-background-color: rgba(255, 0, 0); -fx-padding: 10px;");

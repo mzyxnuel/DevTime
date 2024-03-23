@@ -35,29 +35,30 @@ public class EditorMonitor implements Runnable {
                isOpen = false;
          }
 
-         if (!actReg && isOpen) { //if the edior is open for the first time start the activity
+         if (!actReg && isOpen) { // if the editor is open for the first time, start the activity
             startTime = Instant.now().getEpochSecond();
             actReg = true;
-         } else if (actReg && !isOpen) { // if the edior is closed and the activity is started the finish the activity
+         } else if (actReg && !isOpen) { // if the editor is closed and the activity is started, then finish the activity
             try {
                endTime = Instant.now().getEpochSecond();
 
-               System.out.println("[monitor] activity saved");
                Activity activity = new Activity(getIdUser(), startTime, endTime, getProjectName(), getOs(), getFiles());
 
                String xml = new JAXB(Activity.class).marshal(activity);
                HttpResponse<String> response = new HttpHandler().http(
                   "POST",
                   "/index", // TODO path
-                  xml);
+                  xml
+               );
 
+               System.out.println("[monitor] activity saved");
                System.out.println(response.body()); //TODO display activity saved
 
                actReg = false;
             } catch (URISyntaxException | IOException | InterruptedException e) {
-               e.printStackTrace();
+               new MessageManager("error/connection");
             } catch (JAXBException e) {
-               e.printStackTrace();
+               new MessageManager("error/parsing");
             }
          }
 
