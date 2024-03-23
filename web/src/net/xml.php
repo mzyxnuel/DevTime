@@ -1,6 +1,7 @@
 <?php
    function req($xsd) {
       $request = file_get_contents("php://input");
+
       $xml = new DOMDocument();
       $xml->loadXML($request);
 

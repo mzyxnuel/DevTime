@@ -1,18 +1,6 @@
 <?php
    include("C:/xampp/htdocs/TimeCode/web/src/net/xml.php"); //TODO se riesci a trovare una soluzione usando gli import relativi
 
-   function createXML($id_user){
-      $filePath = 'login_response.xml'
-      $dom = new DOMDocument('1.0', 'utf-8');
-
-      $root = $dom->createElement('user');
-      $id = $dom->createElement('id_user', $id_user);
-
-      $root->appendChild($id);
-      $dom->appendChild($root);
-      $dom->save($filePath);
-   }
-
    $user = "root";
    $password = "";
    $db = "timecode";
@@ -20,33 +8,33 @@
    $port = 3306;
    $conn = new PDO("mysql:host=$host; dbname=$db; port=$port", $user, $password);
 
-   $content = req("C:\Users\MicheleTosato\Desktop\SCUOLA\QUINTA\TimeCode\web\src\net\xsd\login.xsd");
-   // $content = req("C:/xampp/htdocs/TimeCode/web/src/net/xsd/login.xsd");
+   $content = req("C:/xampp/htdocs/TimeCode/web/src/net/xsd/login.xsd");
    $email = $content->email;
    $password = $content->password;
-   $psw = password_hash($password, PASSWORD_BCRYPT);
-
-   echo "email: $email<br>";
-   echo "password: $password<br>";
-   echo "psw: $psw<br>";
-
-   //response
-   $xmlResponse = new DOMDocument();
-   $user = $xmlResponse->createElementNS()
 
    try{
-      $res = $conn->query("SELECT * FROM users");
+      $xml = new SimpleXMLElement('<response/>');
+      $xml->addChild('request', 'login');
 
+      $id_user = null;
+      $users = $conn->query("SELECT * FROM users");
 
+      foreach($users as $row){
+         if($row['email'] == $email && password_verify($password, $row['psw']))
+            $id_user = $row['id_user'];
+      }
 
-      $xmlResponse->addChild()
-   }catch(EXception $e){
-      $
+      if(isset($id_user)){
+         $xml->addChild('success', 'true');
+         $xml->addChild('id_user', $id_user);
+      }else{
+         $xml->addChild('success', 'false');
+      }
+
+      header("Content-Type: application/xml; charset=utf-8");
+      echo $xml->asXML();
+   }catch(Exception $e){
+      die("users error");
    }
-
-   $xml = "<email>" . $email . "</email>";
-   res($xml);
-
-
 
 ?>
