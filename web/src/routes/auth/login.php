@@ -20,7 +20,7 @@
       header("Content-Type: application/xml; charset=utf-8");
       echo $xml->asXML();
    }catch(Exception $e){
-      die("users error");
+      die("login error");
    }
 
 ?>

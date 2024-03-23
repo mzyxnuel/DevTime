@@ -10,14 +10,14 @@
         return new PDO("mysql:host=$host; dbname=$db; port=$port", $user, $password);
     }
 
-    // return [id_user: email exists - null: email doesnt exist]
+    // return [id_user: user exists - null: user doesnt exist]
     function check_user($email){
         $conn = db();
         try{
-            $res = $conn->prepare("SELECT id_user FROM users WHERE email = :email");
-            $res->bindParam(':email', $email);
-            $res->execute();
-            $result = $res->fetch(PDO::FETCH_ASSOC);
+            $query = $conn->prepare("SELECT id_user FROM users WHERE email = :email");
+            $query->bindParam(':email', $email);
+            $query->execute();
+            $result = $query->fetch(PDO::FETCH_ASSOC);
             return $result ? $result['id_user'] : null;
         }catch(Exception $e){
             die("check_user");
@@ -28,17 +28,14 @@
     function check_psw($id_user, $password){
         $conn = db();
         try{
-            $stmt = $conn->prepare("SELECT psw FROM users WHERE id_user = :id_user");
-            $stmt->bindParam(':id_user', $id_user);
-            $stmt->execute();
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            if($result && password_verify($password, $result['psw'])) {
-                return true;
-            }
+            $query = $conn->prepare("SELECT psw FROM users WHERE id_user = :id_user");
+            $query->bindParam(':id_user', $id_user);
+            $query->execute();
+            $result = $query->fetch(PDO::FETCH_ASSOC);
+            return $result && password_verify($password, $result['psw']) ? true : false;
         }catch(Exception $e){
             die("check_psw");
         }
-        return false;
     }
 
     // return [id_user: user exists - null: user doesnt exist]
@@ -49,6 +46,28 @@
                 return null;
         }
         return $id_user;
+    }
+
+    // return [id_user: new user - null: user already registered]
+    function signup($name, $surname, $email, $psw){
+        $conn = db();
+        $id_user = check_user($email);
+
+        if(!isset($id_user)){
+            try{
+                $query = $conn->prepare("INSERT INTO users VALUES(NULL, :name, :surname, :email, :psw)");
+                $query->bindParam(':name', $name);
+                $query->bindParam(':surname', $surname);
+                $query->bindParam(':email', $email);
+                $query->bindParam(':psw', $psw);
+                $query->execute();
+
+                return $conn->lastInsertId();
+            }catch(Exception $e){
+                die("signup");
+            }
+        }
+        return null;
     }
 
     function check_pr($pr_name){
@@ -90,7 +109,7 @@
     function activity($id_user, $id_project, $date, $start, $end){
         $conn = db();
         try{
-            $conn->quesry("INSERT INTO activities VALUES(NULL, $date, TIMEDIFF($end, $start), $id_user, $id_project)");
+            $conn->query("INSERT INTO activities VALUES(NULL, $date, TIMEDIFF($end, $start), $id_user, $id_project)");
         }catch(Exception $e){ die("activity"); }
     }
 
