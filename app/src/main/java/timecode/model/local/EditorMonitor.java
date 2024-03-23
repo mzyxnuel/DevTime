@@ -10,11 +10,11 @@ import java.time.Instant;
 import java.util.List;
 
 import jakarta.xml.bind.JAXBException;
-import timecode.model.Activity;
-import timecode.model.Activity.FilesContainer;
-import timecode.model.Activity.FilesContainer.FileContainer;
 import timecode.model.net.HttpHandler;
 import timecode.model.net.JAXB;
+import timecode.model.requests.Activity;
+import timecode.model.requests.Activity.FilesContainer;
+import timecode.model.requests.Activity.FilesContainer.FileContainer;
 
 public class EditorMonitor implements Runnable {
    private long startTime;

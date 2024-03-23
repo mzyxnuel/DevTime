@@ -7,10 +7,10 @@ import java.net.http.HttpResponse;
 import jakarta.xml.bind.JAXBException;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
-import timecode.model.Login;
 import timecode.model.local.MessageManager;
 import timecode.model.net.HttpHandler;
 import timecode.model.net.JAXB;
+import timecode.model.requests.Login;
 import timecode.view.App;
 
 public class LoginController {

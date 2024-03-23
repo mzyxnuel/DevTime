@@ -5,7 +5,9 @@
 //
 
 
-package timecode.model;
+package timecode.model.responses;
+
+import java.math.BigInteger;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -24,8 +26,8 @@ import jakarta.xml.bind.annotation.XmlType;
  *   <complexContent>
  *     <restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       <sequence>
- *         <element name="email" type="{}emailAddress"/>
- *         <element name="password" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         <element name="state" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         <element name="id_user" type="{http://www.w3.org/2001/XMLSchema}integer"/>
  *       </sequence>
  *     </restriction>
  *   </complexContent>
@@ -36,71 +38,71 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "email",
-    "password"
+    "state",
+    "idUser"
 })
-@XmlRootElement(name = "Login")
-public class Login {
+@XmlRootElement(name = "response")
+public class ResSignUp {
 
     @XmlElement(required = true)
-    protected String email;
-    @XmlElement(required = true)
-    protected String password;
+    protected String state;
+    @XmlElement(name = "id_user", required = true)
+    protected BigInteger idUser;
 
-    public Login() {
+    public ResSignUp() {
     }
 
-    public Login(String email, String password) {
-        this.email = email;
-        this.password = password;
+    public ResSignUp(String state, BigInteger idUser) {
+        this.state = state;
+        this.idUser = idUser;
     }
 
     /**
-     * Gets the value of the email property.
+     * Gets the value of the state property.
      *
      * @return
      *     possible object is
      *     {@link String }
      *
      */
-    public String getEmail() {
-        return email;
+    public String getState() {
+        return state;
     }
 
     /**
-     * Sets the value of the email property.
+     * Sets the value of the state property.
      *
      * @param value
      *     allowed object is
      *     {@link String }
      *
      */
-    public void setEmail(String value) {
-        this.email = value;
+    public void setState(String value) {
+        this.state = value;
     }
 
     /**
-     * Gets the value of the password property.
+     * Gets the value of the idUser property.
      *
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link BigInteger }
      *
      */
-    public String getPassword() {
-        return password;
+    public BigInteger getIdUser() {
+        return idUser;
     }
 
     /**
-     * Sets the value of the password property.
+     * Sets the value of the idUser property.
      *
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link BigInteger }
      *
      */
-    public void setPassword(String value) {
-        this.password = value;
+    public void setIdUser(BigInteger value) {
+        this.idUser = value;
     }
 
 }

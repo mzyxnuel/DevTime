@@ -1,5 +1,7 @@
 package timecode.control.auth;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.http.HttpResponse;
@@ -7,10 +9,11 @@ import java.net.http.HttpResponse;
 import jakarta.xml.bind.JAXBException;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
-import timecode.model.SignUp;
 import timecode.model.local.MessageManager;
 import timecode.model.net.HttpHandler;
 import timecode.model.net.JAXB;
+import timecode.model.requests.SignUp;
+import timecode.model.responses.ResSignUp;
 import timecode.view.App;
 
 public class SignUpController {
@@ -39,7 +42,22 @@ public class SignUpController {
             "/auth/signup",
             xml
          );
-         System.out.println(response.body()); //TODO check if response state is true
+
+         ResSignUp res = (ResSignUp) new JAXB(ResSignUp.class).unmarshal(response.body());
+         String status = res.getState().substring(0, res.getState().indexOf("/"));
+
+         if (status.equals("success")) {
+            try {
+               File key = new File("app/.env.local");
+               FileWriter w = new FileWriter(key);
+               w.write("USER = " + res.getIdUser().toString());
+               w.close();
+            } catch (IOException e) {
+               e.printStackTrace();
+            }
+         } else
+            new MessageManager(res.getState());
+
       } catch (URISyntaxException | IOException | InterruptedException e) {
          new MessageManager("error/connection");
       } catch (JAXBException e) {
