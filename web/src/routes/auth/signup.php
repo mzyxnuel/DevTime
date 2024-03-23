@@ -13,10 +13,10 @@
 
    $id_user = signup($name, $surname, $email, $psw);
    if(isset($id_user)){
-      $xml->addChild('state', 'signup/success');
+      $xml->addChild('state', 'success/signup');
       $xml->addChild('id_user', $id_user);
    }else{
-      $xml->addChild('state', 'signup/error');
+      $xml->addChild('state', 'error/signup');
    }
 
    header("Content-Type: application/xml; charset=utf-8");
