@@ -84,7 +84,9 @@
         $s = $unix_time % 60;
         $time = sprintf('%02d:%02d:%02d', $h, $m, $s);
 
-        activity($id_user, $id_project, $date, $time);
+        $id_os = check_os($os);
+
+        activity($id_user, $id_project, $id_os, $date, $time);
         activity_language();
     }
 
@@ -103,11 +105,11 @@
     }
 
     // return [id_project]
-    function project($pr_name){
+    function project($name){
         $conn = db();
         try{
             $query = $conn->prepare("INSERT INTO projects VALUES(NULL, :name)");
-            $query->bindParam(':name', $pr_name);
+            $query->bindParam(':name', $name);
             $query->execute();
             return $conn->lastInsertId();
         }catch(Exception $e){
@@ -128,15 +130,30 @@
         }
     }
 
-    // return [ ]
-    function activity($id_user, $id_project, $date, $time){
+    // return [id_os: os known - null: os doesnt known]
+    function check_os($name){
         $conn = db();
         try{
-            $query = $conn->prepare("INSERT INTO projects VALUES(NULL, :date, :time, :id_user, :id_project)");
+            $query = $conn->prepare("SELECT id_os FROM oss WHERE name = :name");
+            $query->bindParam(':name', $name);
+            $query->execute();
+            $result = $query->fetch(PDO::FETCH_ASSOC);
+            return $result ? $result['id_os'] : null;
+        }catch(Exception $e){
+            die("check_os");
+        }
+    }
+
+    // return [ ]
+    function activity($id_user, $id_project, $id_os, $date, $time){
+        $conn = db();
+        try{
+            $query = $conn->prepare("INSERT INTO projects VALUES(NULL, :date, :time, :id_user, :id_project, :id_os)");
             $query->bindParam(':date', $date);
             $query->bindParam(':time', $time);
             $query->bindParam(':id_user', $id_user);
             $query->bindParam(':id_project', $id_project);
+            $query->bindParam(':id_os', $id_os);
             $query->execute();
         }catch(Exception $e){
             die("activity");
@@ -145,6 +162,10 @@
 
     // return [ ]
     function activities_languages($id_activity, $files_name){
+
+    }
+
+    function get_ext($file_name){
 
     }
 ?>

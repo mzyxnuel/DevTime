@@ -1,6 +1,6 @@
 <?php
    include("C:/xampp/htdocs/TimeCode/web/src/net/xml.php");
-   include("C:/xampp/htdocs/TimeCode/web/src/func.php");
+   include("func.php");
 
    $content = req("C:/xampp/htdocs/TimeCode/web/src/net/xsd/login.xsd");
    $id_user = $content->id_user;
