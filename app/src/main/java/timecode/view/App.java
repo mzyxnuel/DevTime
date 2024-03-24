@@ -8,6 +8,8 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import timecode.model.local.DotEnv;
+import timecode.model.local.EditorMonitor;
 import timecode.view.local.FxmlManager;
 
 public class App extends Application {
@@ -21,11 +23,19 @@ public class App extends Application {
       scene = new Scene(root);
       stage = new Stage();
 
+      String path = "";
+      if (new DotEnv().get("USER") == null)
+         path = "/ui/login";
+      else {
+         path = "/ui/dashboard";
+         new Thread(new EditorMonitor()).start();
+      }
+
       Application.setUserAgentStylesheet(new CupertinoDark().getUserAgentStylesheet());
-      scene = new Scene(new FxmlManager().loadFXML("/ui/login"));
+      scene = new Scene(new FxmlManager().loadFXML(path));
 
       stage.setScene(scene);
-      stage.setResizable(false); // TODO
+      stage.setResizable(false);
       stage.show();
    }
 

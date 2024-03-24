@@ -28,3 +28,4 @@ target/
 
 # Env
 **/.env
+**/.env.local

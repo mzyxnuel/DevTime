@@ -5,7 +5,7 @@
 //
 
 
-package timecode.model;
+package timecode.model.requests;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;

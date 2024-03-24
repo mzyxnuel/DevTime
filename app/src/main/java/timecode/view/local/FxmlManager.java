@@ -7,9 +7,11 @@ import javafx.scene.Parent;
 import timecode.view.App;
 
 public class FxmlManager {
+   private FXMLLoader fx;
+
    public Parent loadFXML(String fxml) {
       try {
-         FXMLLoader fx = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
+         fx = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
          return fx.load();
       } catch (IOException e) {
          e.printStackTrace();

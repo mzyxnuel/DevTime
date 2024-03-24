@@ -5,7 +5,7 @@
 //
 
 
-package timecode.model;
+package timecode.model.requests;
 
 import java.util.ArrayList;
 import java.util.List;

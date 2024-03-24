@@ -7,10 +7,12 @@ import java.net.http.HttpResponse;
 import jakarta.xml.bind.JAXBException;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
-import timecode.model.SignUp;
+import timecode.model.local.DotEnv;
 import timecode.model.local.MessageManager;
 import timecode.model.net.HttpHandler;
 import timecode.model.net.JAXB;
+import timecode.model.requests.SignUp;
+import timecode.model.responses.ResAuth;
 import timecode.view.App;
 
 public class SignUpController {
@@ -39,7 +41,15 @@ public class SignUpController {
             "/auth/signup",
             xml
          );
-         System.out.println(response.body()); //TODO check if response state is true
+
+         ResAuth res = (ResAuth) new JAXB(ResAuth.class).unmarshal(response.body());
+         String status = res.getState().substring(0, res.getState().indexOf("/"));
+
+         if (status.equals("success"))
+            new DotEnv().saveUserId(res.getIdUser());
+         else
+            new MessageManager(res.getState());
+
       } catch (URISyntaxException | IOException | InterruptedException e) {
          new MessageManager("error/connection");
       } catch (JAXBException e) {
