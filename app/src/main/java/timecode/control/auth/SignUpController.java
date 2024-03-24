@@ -35,18 +35,19 @@ public class SignUpController {
 
       try {
          SignUp signup = new SignUp(nameField, surnameField, emailField, passwordField);
-         String xml = new JAXB(SignUp.class).marshal(signup);
-         HttpResponse<String> response = http.http(
+         String xml = new JAXB(SignUp.class).marshal(signup); // marshal the request
+
+         HttpResponse<String> response = http.http( // send the request
             "POST",
             "/auth/signup",
             xml
          );
 
-         ResAuth res = (ResAuth) new JAXB(ResAuth.class).unmarshal(response.body());
-         String status = res.getState().substring(0, res.getState().indexOf("/"));
+         ResAuth res = (ResAuth) new JAXB(ResAuth.class).unmarshal(response.body()); // unmarshal the response
+         String status = res.getState().substring(0, res.getState().indexOf("/")); // split the response state
 
          if (status.equals("success"))
-            new DotEnv().saveUserId(res.getIdUser());
+            new DotEnv().saveUserId(res.getIdUser()); // save the user id in the .env file
          else
             new MessageManager(res.getState());
 
@@ -59,6 +60,6 @@ public class SignUpController {
 
    @FXML
    private void switchToLogin() {
-      App.setScene("/ui/login");
+      App.setScene("/ui/login"); // switch ui
    }
 }

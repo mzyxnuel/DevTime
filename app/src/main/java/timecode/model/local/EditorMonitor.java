@@ -28,7 +28,7 @@ public class EditorMonitor implements Runnable {
       while (true) {
          List<ProcessHandle> processes = ProcessHandle.allProcesses().toList();
          for (ProcessHandle process : processes) {
-            if (process.info().command().orElse("").contains(processName)) {
+            if (process.info().command().orElse("").contains(processName)) { //check if process is active
                isOpen = true;
                break;
             } else
@@ -45,7 +45,7 @@ public class EditorMonitor implements Runnable {
                Activity activity = new Activity(getIdUser(), startTime, endTime, getProjectName(), getOs(), getFiles());
 
                String xml = new JAXB(Activity.class).marshal(activity);
-               HttpResponse<String> response = new HttpHandler().http(
+               HttpResponse<String> response = new HttpHandler().http( // new request
                   "POST",
                   "/index", // TODO path
                   xml
@@ -72,7 +72,7 @@ public class EditorMonitor implements Runnable {
    }
 
    private int getIdUser() {
-      return 0;
+      return 0; //TODO
    }
 
    private String getProjectName() { // simulate the project folder

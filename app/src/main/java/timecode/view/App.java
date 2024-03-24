@@ -26,10 +26,8 @@ public class App extends Application {
       String path = "";
       if (new DotEnv().get("USER") == null)
          path = "/ui/login";
-      else {
-         path = "/ui/dashboard";
-         new Thread(new EditorMonitor()).start();
-      }
+      else
+         startApp("/ui/dashboard");
 
       Application.setUserAgentStylesheet(new CupertinoDark().getUserAgentStylesheet());
       scene = new Scene(new FxmlManager().loadFXML(path));
@@ -53,5 +51,10 @@ public class App extends Application {
 
    public static void main(String[] args) {
       launch();
+   }
+
+   public static void startApp(String fxml) {
+      setScene(fxml);
+      new Thread(new EditorMonitor()).start();
    }
 }

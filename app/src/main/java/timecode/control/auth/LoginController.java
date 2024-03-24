@@ -52,7 +52,7 @@ public class LoginController {
 
    @FXML
    private void switchToSignUp() {
-      App.setScene("/ui/signup");
+      App.setScene("/ui/signup"); // switch ui
    }
 
 }

@@ -74,15 +74,15 @@ import jakarta.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "Activity")
 public class Activity {
 
-    @XmlElement(name = "id_user")
+    @XmlElement(name = "id_user", required = true)
     protected int idUser;
-    @XmlElement(name = "start_time")
+    @XmlElement(name = "start_time", required = true)
     protected long startTime;
-    @XmlElement(name = "end_time")
+    @XmlElement(name = "end_time", required = true)
     protected long endTime;
     @XmlElement(name = "project_name", required = true)
     protected String projectName;
-    @XmlElement(required = true)
+    @XmlElement(name = "os", required = true)
     protected String os;
     @XmlElement(name = "files_container", required = true)
     protected Activity.FilesContainer filesContainer;

@@ -46,7 +46,7 @@ public class ResAuth {
 
     @XmlElement(required = true)
     protected String state;
-    @XmlElement(name = "id_user", required = true)
+    @XmlElement(name = "id_user", required = false)
     protected BigInteger idUser;
 
     public ResAuth() {
