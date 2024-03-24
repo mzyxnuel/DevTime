@@ -17,7 +17,7 @@ CREATE TABLE projects(
 
 CREATE TABLE activities(
    id_activity INT UNSIGNED ZEROFILL AUTO_INCREMENT PRIMARY KEY,
-   date DATE NOT NULL,
+   date DATE UNIQUE NOT NULL,
    time INT NOT NULL,
    id_user INT UNSIGNED ZEROFILL NOT NULL,
    id_project INT UNSIGNED ZEROFILL NOT NULL,
@@ -71,3 +71,27 @@ CREATE TABLE activities_languages(
    CONSTRAINT fk_language_activity FOREIGN KEY(ext)
    REFERENCES languages(ext)
 );
+
+SELECT SUM(AL.modify_rows)
+FROM activities_languages AS AL
+INNER JOIN activities AS AC USING(id_activity)
+WHERE AC.id_user = 'id_user'
+AND AC.date = NOW();
+-- sum rows modified today
+
+SELECT AVG(sum_modify_rows) AS avg_modify_rows
+FROM (
+   SELECT id_activity, SUM(modify_rows) AS sum_modify_rows
+   FROM activities_languages
+   INNER JOIN activities AS AC USING(id_activity)
+   WHERE AC.id_user = ''
+   GROUP BY id_activity
+) AS subtable;
+-- avarage rows modified for each activity
+
+SELECT SUM(modify_rows) / (NOW() - U.date + 1) AS daily_modify_rows
+FROM activities_languages AS AL
+INNER JOIN activities AS AC USING(id_activity)
+INNER JOIN users AS U USING(id_user)
+WHERE AC.id_user = '';
+-- avarage rows modified for each day
