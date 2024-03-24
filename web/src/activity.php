@@ -2,7 +2,7 @@
    include("C:/xampp/htdocs/TimeCode/web/src/net/xml.php");
    include("func.php");
 
-   $content = req("C:/xampp/htdocs/TimeCode/web/src/net/xsd/login.xsd");
+   $content = req("C:/xampp/htdocs/TimeCode/web/src/net/xsd/activity.xsd");
    $id_user = $content->id_user;
    $start_time = $content->start_time;
    $end_time = $content->end_time;

@@ -71,7 +71,7 @@
     }
 
     // return [ ]
-    function insert($id_user, $start, $end, $pr_name, $os, $files_name){
+    function insert($id_user, $start, $end, $pr_name, $os, $files_container){
         $id_project = check_pr($pr_name);
         if(!isset($id_project))
             $id_project = project($pr_name);
@@ -87,7 +87,9 @@
         $id_os = check_os($os);
 
         activity($id_user, $id_project, $id_os, $date, $time);
-        activity_language();
+        $modify_rows = modify_rows($id_project, $files_container);
+        activity_languages($id_activity, $modified_rows);
+        project_languages($id_project, $modified_rows);
     }
 
     // return [id_project: project exists - null: project doesnt exist]
@@ -160,12 +162,89 @@
         }
     }
 
-    // return [ ]
-    function activities_languages($id_activity, $files_name){
-
+    // return [rows per extension associative array after new activity]
+    function new_rows_ext($files_container){
+        $rows_ext = array();
+        foreach ($files_container->file_container as $file) {
+            $ext = pathinfo($file->file_name, PATHINFO_EXTENSION);
+            $num_rows = $file->rows_count;
+            if(array_key_exists($ext, $rows_ext)) {
+                $rows_ext[$ext] += $num_rows;
+            }else {
+                $rows_ext[$ext] = $num_rows;
+            }
+        }
+        return $rows_ext;
     }
 
-    function get_ext($file_name){
+    // return [rows per extension associative array before new activity]
+    function old_rows_ext($id_project){
+        $conn = db();
+        try{
+            $query = $conn->prepare("SELECT ext, num_rows FROM projects_languages WHERE id_project = :id_project");
+            $query->bindParam(':id_project', $id_project);
+            $query->execute();
+            $rows_ext = array();
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $rows_ext[$row['ext']] = $row['num_rows'];
+            }
+            return $rows_ext;
+        } catch(Exception $e){
+            die("old_rows_ext");
+        }
+    }
 
+    // return [modify rows per extension associative array]
+    function modify_rows($id_project, $files_container){
+        $new_rows_ext = new_rows_ext($files_container);
+        $old_rows_ext = old_rows_ext($id_project);
+
+        $ext_rows = array_merge(array_keys($new_rows_ext), array_keys($old_rows_ext));
+        $modify_rows = array();
+
+        foreach ($ext_rows as $ext) {
+            $new_rows = isset($new_rows_ext[$ext]) ? $new_rows_ext[$ext] : 0;
+            $old_rows = isset($old_rows_ext[$ext]) ? $old_rows_ext[$ext] : 0;
+            $modified_rows[$ext] = $new_rows - $old_rows;
+        }
+        return $modified_rows;
+    }
+
+    // TODO
+    function activity_languages($id_activity, $modified_rows){
+        try{
+            foreach ($files_container->file_container as $file) {
+                $file_name = $file->file_name;
+                $modify_rows = $file->rows_count; //TODO: rows_cout rappresenta il numero di righe del file, non il numero di righe aggiunte/tolte al file
+                $ext = pathinfo($file_name, PATHINFO_EXTENSION);
+
+                $query = $conn->prepare("INSERT INTO activities_languages VALUES (:id_activity, :ext, :modify_rows)
+                                        ON DUPLICATE KEY UPDATE modify_rows = modify_rows + :modify_rows");
+                $query->bindParam(':id_activity', $id_activity);
+                $query->bindParam(':ext', $ext);
+                $query->bindParam(':modify_rows', $modify_rows);
+                $query->execute();
+            }
+        }catch(Exception $e){
+            die("activity_languages");
+        }
+    }
+
+    // TODO
+    function project_languages($id_project, $modified_rows){
+        try {
+            $conn = db();
+
+            foreach ($rows_ext as $ext => $num_rows) {
+                $query = $conn->prepare("INSERT INTO projects_languages VALUES (:id_project, :ext, :num_rows)
+                                         ON DUPLICATE KEY UPDATE num_rows = :num_rows");
+                $query->bindParam(':id_project', $id_project);
+                $query->bindParam(':ext', $ext);
+                $query->bindParam(':num_rows', $num_rows);
+                $query->execute();
+            }
+        } catch(Exception $e) {
+            die("project_languages");
+        }
     }
 ?>
