@@ -42,17 +42,17 @@ import jakarta.xml.bind.annotation.XmlType;
     "idUser"
 })
 @XmlRootElement(name = "response")
-public class ResSignUp {
+public class ResAuth {
 
     @XmlElement(required = true)
     protected String state;
     @XmlElement(name = "id_user", required = true)
     protected BigInteger idUser;
 
-    public ResSignUp() {
+    public ResAuth() {
     }
 
-    public ResSignUp(String state, BigInteger idUser) {
+    public ResAuth(String state, BigInteger idUser) {
         this.state = state;
         this.idUser = idUser;
     }
