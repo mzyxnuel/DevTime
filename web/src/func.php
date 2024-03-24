@@ -72,11 +72,7 @@
 
     // return [ ]
     function insert($id_user, $start, $end, $pr_name, $os, $files_container){
-        $id_project = check_pr($pr_name);
-        if(!isset($id_project))
-            $id_project = project($pr_name);
-        user_project($id_user, $id_project);
-
+        // date and time
         $date = date("d-m-Y", $start);
         $unix_time = $end - $start;
         $h = floor($unix_time / 3600);
@@ -84,16 +80,30 @@
         $s = $unix_time % 60;
         $time = sprintf('%02d:%02d:%02d', $h, $m, $s);
 
+        // os
         $id_os = check_os($os);
 
-        activity($id_user, $id_project, $id_os, $date, $time);
+        // project
+        $id_project = check_project($pr_name);
+        if(!isset($id_project))
+            $id_project = project($pr_name);
+        user_project($id_user, $id_project);
+
+        // activity
+        $id_activity = check_activity($date);
+        if(isset($id_activity))
+            update_activity($id_activity, $time);
+        else
+            $id_activity = activity($id_user, $id_project, $id_os, $date, $time);
+
+        // languages
         $modify_rows_ext = modify_rows_ext($id_project, $files_container);
         activity_languages($id_activity, $modify_rows_ext);
         project_languages($id_project, $modify_rows_ext);
     }
 
     // return [id_project: project exists - null: project doesnt exist]
-    function check_pr($pr_name){
+    function check_project($pr_name){
         $conn = db();
         try{
             $query = $conn->prepare("SELECT id_project FROM projects WHERE name = :name");
@@ -102,7 +112,7 @@
             $result = $query->fetch(PDO::FETCH_ASSOC);
             return $result ? $result['id_project'] : null;
         }catch(Exception $e){
-            die("check_pr");
+            die("check_project");
         }
     }
 
@@ -146,7 +156,34 @@
         }
     }
 
+    // return [id_activity: activity already exists - null: activity doesnt exist]
+    function check_activity($date){
+        $conn = db();
+        try{
+            $query = $conn->prepare("SELECT id_activity FROM activities WHERE date = :date");
+            $query->bindParam(':date', $date);
+            $query->execute();
+            $result = $query->fetch(PDO::FETCH_ASSOC);
+            return $result ? $result['id_activity'] : null;
+        }catch(Exception $e){
+            die("check_activity");
+        }
+    }
+
     // return [ ]
+    function update_activity($id_activity, $time){
+        $conn = db();
+        try{
+            $query = $conn->prepare("UPDATE activities SET time = time + :time WHERE id_activity = :id_activity");
+            $query->bindParam(':id_activity', $id_activity);
+            $query->bindParam(':time', $time);
+            $query->execute();
+        }catch(Exception $e){
+            die("activity");
+        }
+    }
+
+    // return [id_activity]
     function activity($id_user, $id_project, $id_os, $date, $time){
         $conn = db();
         try{
@@ -157,6 +194,7 @@
             $query->bindParam(':id_project', $id_project);
             $query->bindParam(':id_os', $id_os);
             $query->execute();
+            return $conn->lastInsertId();
         }catch(Exception $e){
             die("activity");
         }
