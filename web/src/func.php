@@ -87,9 +87,9 @@
         $id_os = check_os($os);
 
         activity($id_user, $id_project, $id_os, $date, $time);
-        $modify_rows = modify_rows($id_project, $files_container);
-        activity_languages($id_activity, $modified_rows);
-        project_languages($id_project, $modified_rows);
+        $modify_rows_ext = modify_rows_ext($id_project, $files_container);
+        activity_languages($id_activity, $modify_rows_ext);
+        project_languages($id_project, $modify_rows_ext);
     }
 
     // return [id_project: project exists - null: project doesnt exist]
@@ -195,7 +195,7 @@
     }
 
     // return [modify rows per extension associative array]
-    function modify_rows($id_project, $files_container){
+    function modify_rows_ext($id_project, $files_container){
         $new_rows_ext = new_rows_ext($files_container);
         $old_rows_ext = old_rows_ext($id_project);
 
@@ -210,39 +210,39 @@
         return $modified_rows;
     }
 
-    // TODO
-    function activity_languages($id_activity, $modified_rows){
+    // return [ ]
+    function activity_languages($id_activity, $modify_rows_ext){
         try{
-            foreach ($files_container->file_container as $file) {
-                $file_name = $file->file_name;
-                $modify_rows = $file->rows_count; //TODO: rows_cout rappresenta il numero di righe del file, non il numero di righe aggiunte/tolte al file
-                $ext = pathinfo($file_name, PATHINFO_EXTENSION);
-
-                $query = $conn->prepare("INSERT INTO activities_languages VALUES (:id_activity, :ext, :modify_rows)
-                                        ON DUPLICATE KEY UPDATE modify_rows = modify_rows + :modify_rows");
-                $query->bindParam(':id_activity', $id_activity);
+            $conn = db();
+            foreach ($modify_rows_ext as $ext => $modify_rows) {
+                $query = $conn->prepare("INSERT INTO activities_languages VALUES (:id_project, :ext, :modify_rows)
+                                         ON DUPLICATE KEY UPDATE modify_rows = modify_rows + :modify_rows");
+                $query->bindParam(':id_project', $id_project);
                 $query->bindParam(':ext', $ext);
                 $query->bindParam(':modify_rows', $modify_rows);
                 $query->execute();
             }
+            $query = $conn->prepare("DELETE FROM activities_languages WHERE modify_rows = 0");
+            $query->execute();
         }catch(Exception $e){
             die("activity_languages");
         }
     }
 
-    // TODO
-    function project_languages($id_project, $modified_rows){
+    // return [ ]
+    function project_languages($id_project, $modify_rows_ext){
         try {
             $conn = db();
-
-            foreach ($rows_ext as $ext => $num_rows) {
-                $query = $conn->prepare("INSERT INTO projects_languages VALUES (:id_project, :ext, :num_rows)
-                                         ON DUPLICATE KEY UPDATE num_rows = :num_rows");
+            foreach ($modify_rows_ext as $ext => $modify_rows) {
+                $query = $conn->prepare("INSERT INTO projects_languages VALUES (:id_project, :ext, :modify_rows)
+                                         ON DUPLICATE KEY UPDATE num_rows = num_rows + :modify_rows");
                 $query->bindParam(':id_project', $id_project);
                 $query->bindParam(':ext', $ext);
-                $query->bindParam(':num_rows', $num_rows);
+                $query->bindParam(':modify_rows', $modify_rows);
                 $query->execute();
             }
+            $query = $conn->prepare("DELETE FROM projects_languages WHERE num_rows = 0");
+            $query->execute();
         } catch(Exception $e) {
             die("project_languages");
         }

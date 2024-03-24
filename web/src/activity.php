@@ -12,7 +12,12 @@
 
    $xml = new SimpleXMLElement('<response/>');
 
-   insert($id_user, $start_time, $end_time,$project_name, $os, $files_container);
+   $result = insert($id_user, $start_time, $end_time,$project_name, $os, $files_container);
+   if($result){
+      $xml->addChild('state', 'success/activity');
+   }else{
+      $xml->addChild('state','error/activity');
+   }
 
    header("Content-Type: application/xml; charset=utf-8");
    echo $xml->asXML();
