@@ -6,8 +6,7 @@ CREATE TABLE users(
    surname VARCHAR(100) NOT NULL,
    email VARCHAR(100) UNIQUE NOT NULL,
    psw VARCHAR(100) NOT NULL,
-   date DATE NOT NULL,
-   CONSTRAINT c_email CHECK(email LIKE '%@%')
+   date DATE NOT NULL
 );
 
 CREATE TABLE projects(

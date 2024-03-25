@@ -20,7 +20,7 @@
             $result = $query->fetch(PDO::FETCH_ASSOC);
             return $result ? $result['id_user'] : null;
         }catch(Exception $e){
-            die("check_user");
+            die("check_user: " . $e->getMessage());
         }
     }
 
@@ -34,7 +34,7 @@
             $result = $query->fetch(PDO::FETCH_ASSOC);
             return $result && password_verify($password, $result['psw']) ? true : false;
         }catch(Exception $e){
-            die("check_psw");
+            die("check_psw: " . $e->getMessage());
         }
     }
 
@@ -52,7 +52,6 @@
     function signup($name, $surname, $email, $psw){
         $conn = db();
         $id_user = check_user($email);
-
         if(!isset($id_user)){
             try{
                 $query = $conn->prepare("INSERT INTO users VALUES(NULL, :name, :surname, :email, :psw, NOW())");
@@ -61,10 +60,9 @@
                 $query->bindParam(':email', $email);
                 $query->bindParam(':psw', $psw);
                 $query->execute();
-
                 return $conn->lastInsertId();
             }catch(Exception $e){
-                die("signup");
+                die("signup: " . $e->getMessage());
             }
         }
         return null;
@@ -97,7 +95,7 @@
             $result = $query->fetch(PDO::FETCH_ASSOC);
             return $result ? $result['id_project'] : null;
         }catch(Exception $e){
-            die("check_project");
+            die("check_project: " . $e->getMessage());
         }
     }
 
@@ -110,7 +108,7 @@
             $query->execute();
             return $conn->lastInsertId();
         }catch(Exception $e){
-            die("project");
+            die("project: " . $e->getMessage());
         }
     }
 
@@ -123,7 +121,7 @@
             $query->bindParam(':id_project', $id_project);
             $query->execute();
         }catch(Exception $e){
-            die("user_project");
+            die("user_project: " . $e->getMessage());
         }
     }
 
@@ -137,7 +135,7 @@
             $result = $query->fetch(PDO::FETCH_ASSOC);
             return $result ? $result['id_os'] : null;
         }catch(Exception $e){
-            die("check_os");
+            die("check_os: " . $e->getMessage());
         }
     }
 
@@ -154,7 +152,7 @@
             $query->execute();
             return $conn->lastInsertId();
         }catch(Exception $e){
-            die("activity");
+            die("activity: " . $e->getMessage());
         }
     }
 
@@ -186,7 +184,7 @@
             }
             return $rows_ext;
         } catch(Exception $e){
-            die("old_rows_ext");
+            die("old_rows_ext: " . $e->getMessage());
         }
     }
 
@@ -221,7 +219,7 @@
             $query = $conn->prepare("DELETE FROM projects_languages WHERE num_rows = 0");
             $query->execute();
         } catch(Exception $e) {
-            die("project_languages");
+            die("project_languages: " . $e->getMessage());
         }
     }
 
@@ -239,7 +237,7 @@
                 }
             }
         }catch(Exception $e){
-            die("activity_languages");
+            die("activity_languages " . $e->getMessage());
         }
     }
 ?>
