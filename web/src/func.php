@@ -72,31 +72,19 @@
 
     // return [ ]
     function insert($id_user, $start, $end, $pr_name, $os, $files_container){
-        // date and time
-        $date = date("d-m-Y", $start/1000); //TODO risulta essere 00-00-0000
-        $time = $end - $start; //TODO risulta essere 0
-
-        // os
+        $date = date("Y-m-d", $start = time());
+        $time = $end - $start;
         $id_os = check_os($os);
-
-        // project
         $id_project = check_project($pr_name);
         if(!isset($id_project))
             $id_project = project($pr_name);
-        user_project($id_user, $id_project);
-
-        // activity
-        $id_activity = check_activity($date);
-        if(isset($id_activity))
-            update_activity($id_activity, $time);
-        else
-            $id_activity = activity($id_user, $id_project, $id_os, $date, $time);
-        return $id_activity;
-
-        // languages
+        $id_activity = activity($id_user, $id_project, $id_os, $date, $time);
         $modify_rows_ext = modify_rows_ext($id_project, $files_container);
-        activity_languages($id_activity, $modify_rows_ext);
+
+        user_project($id_user, $id_project);
         project_languages($id_project, $modify_rows_ext);
+        activity_languages($id_activity, $modify_rows_ext);
+        return $id_activity;
     }
 
     // return [id_project: project exists - null: project doesnt exist]
@@ -150,33 +138,6 @@
             return $result ? $result['id_os'] : null;
         }catch(Exception $e){
             die("check_os");
-        }
-    }
-
-    // return [id_activity: activity already exists - null: activity doesnt exist]
-    function check_activity($date){
-        $conn = db();
-        try{
-            $query = $conn->prepare("SELECT id_activity FROM activities WHERE date = :date");
-            $query->bindParam(':date', $date);
-            $query->execute();
-            $result = $query->fetch(PDO::FETCH_ASSOC);
-            return $result ? $result['id_activity'] : null;
-        }catch(Exception $e){
-            die("check_activity");
-        }
-    }
-
-    // return [ ]
-    function update_activity($id_activity, $time){
-        $conn = db();
-        try{
-            $query = $conn->prepare("UPDATE activities SET time = time + :time WHERE id_activity = :id_activity");
-            $query->bindParam(':id_activity', $id_activity);
-            $query->bindParam(':time', $time);
-            $query->execute();
-        }catch(Exception $e){
-            die("update_activity");
         }
     }
 
@@ -246,25 +207,6 @@
     }
 
     // return [ ]
-    function activity_languages($id_activity, $modify_rows_ext){
-        try{
-            $conn = db();
-            foreach ($modify_rows_ext as $ext => $modify_rows) {
-                $query = $conn->prepare("INSERT INTO activities_languages VALUES (:id_project, :ext, :modify_rows)
-                                         ON DUPLICATE KEY UPDATE modify_rows = modify_rows + :modify_rows");
-                $query->bindParam(':id_project', $id_project);
-                $query->bindParam(':ext', $ext);
-                $query->bindParam(':modify_rows', $modify_rows);
-                $query->execute();
-            }
-            $query = $conn->prepare("DELETE FROM activities_languages WHERE modify_rows = 0");
-            $query->execute();
-        }catch(Exception $e){
-            die("activity_languages");
-        }
-    }
-
-    // return [ ]
     function project_languages($id_project, $modify_rows_ext){
         try {
             $conn = db();
@@ -280,6 +222,24 @@
             $query->execute();
         } catch(Exception $e) {
             die("project_languages");
+        }
+    }
+
+    // return [ ]
+    function activity_languages($id_activity, $modify_rows_ext){
+        try{
+            $conn = db();
+            foreach ($modify_rows_ext as $ext => $modify_rows) {
+                if($modify_rows != 0){
+                    $query = $conn->prepare("INSERT INTO activities_languages VALUES (:id_activity, :ext, :modify_rows)");
+                    $query->bindParam(':id_activity', $id_activity);
+                    $query->bindParam(':ext', $ext);
+                    $query->bindParam(':modify_rows', $modify_rows);
+                    $query->execute();
+                }
+            }
+        }catch(Exception $e){
+            die("activity_languages");
         }
     }
 ?>
