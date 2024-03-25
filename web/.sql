@@ -21,7 +21,7 @@ CREATE TABLE activities(
    time INT NOT NULL,
    id_user INT UNSIGNED ZEROFILL NOT NULL,
    id_project INT UNSIGNED ZEROFILL NOT NULL,
-   id_os INT UNSIGNED ZEROFILL NOT NULL,
+   id_os INT UNSIGNED ZEROFILL,
    CONSTRAINT fk_user_activity FOREIGN KEY(id_user)
    REFERENCES users(id_user),
    CONSTRAINT fk_project_activity FOREIGN KEY(id_project)
@@ -52,7 +52,7 @@ CREATE TABLE users_projects(
 
 CREATE TABLE projects_languages(
    id_project INT UNSIGNED ZEROFILL NOT NULL,
-   ext VARCHAR(5) NOT NULL,
+   ext VARCHAR(5),
    num_rows INT NOT NULL,
    CONSTRAINT pk_project_language PRIMARY KEY(id_project, ext),
    CONSTRAINT fk_project_language FOREIGN KEY(id_project)
@@ -63,7 +63,7 @@ CREATE TABLE projects_languages(
 
 CREATE TABLE activities_languages(
    id_activity INT UNSIGNED ZEROFILL NOT NULL,
-   ext VARCHAR(5) NOT NULL,
+   ext VARCHAR(5),
    modify_rows INT NOT NULL,
    CONSTRAINT pk_activity_language PRIMARY KEY(id_activity, ext),
    CONSTRAINT fk_activity_language FOREIGN KEY(id_activity)

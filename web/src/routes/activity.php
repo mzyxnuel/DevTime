@@ -1,6 +1,6 @@
 <?php
    include("C:/xampp/htdocs/TimeCode/web/src/net/xml.php");
-   include("func.php");
+   include("C:/xampp/htdocs/TimeCode/web/src/func.php");
 
    $content = req("C:/xampp/htdocs/TimeCode/web/src/net/xsd/activity.xsd");
    $id_user = $content->id_user;
@@ -12,13 +12,13 @@
 
    $xml = new SimpleXMLElement('<response/>');
 
-   $result = insert($id_user, $start_time, $end_time,$project_name, $os, $files_container);
-   if($result){
-      $xml->addChild('state', 'success/activity');
-   }else{
-      $xml->addChild('state','error/activity');
-   }
+   echo insert($id_user, $start_time, $end_time,$project_name, $os, $files_container);
+   // if($result){
+   //    $xml->addChild('state', 'success/activity');
+   // }else{
+   //    $xml->addChild('state','error/activity');
+   // }
 
-   header("Content-Type: application/xml; charset=utf-8");
-   echo $xml->asXML();
+   // header("Content-Type: application/xml; charset=utf-8");
+   // echo $xml->asXML();
 ?>

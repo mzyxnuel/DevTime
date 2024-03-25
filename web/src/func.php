@@ -73,12 +73,8 @@
     // return [ ]
     function insert($id_user, $start, $end, $pr_name, $os, $files_container){
         // date and time
-        $date = date("d-m-Y", $start);
-        $unix_time = $end - $start;
-        $h = floor($unix_time / 3600);
-        $m = floor(($unix_time % 3600) / 60);
-        $s = $unix_time % 60;
-        $time = sprintf('%02d:%02d:%02d', $h, $m, $s);
+        $date = date("d-m-Y", $start/1000); //TODO risulta essere 00-00-0000
+        $time = $end - $start; //TODO risulta essere 0
 
         // os
         $id_os = check_os($os);
@@ -95,6 +91,7 @@
             update_activity($id_activity, $time);
         else
             $id_activity = activity($id_user, $id_project, $id_os, $date, $time);
+        return $id_activity;
 
         // languages
         $modify_rows_ext = modify_rows_ext($id_project, $files_container);
@@ -179,7 +176,7 @@
             $query->bindParam(':time', $time);
             $query->execute();
         }catch(Exception $e){
-            die("activity");
+            die("update_activity");
         }
     }
 
@@ -187,7 +184,7 @@
     function activity($id_user, $id_project, $id_os, $date, $time){
         $conn = db();
         try{
-            $query = $conn->prepare("INSERT INTO projects VALUES(NULL, :date, :time, :id_user, :id_project, :id_os)");
+            $query = $conn->prepare("INSERT INTO activities VALUES(NULL, :date, :time, :id_user, :id_project, :id_os)");
             $query->bindParam(':date', $date);
             $query->bindParam(':time', $time);
             $query->bindParam(':id_user', $id_user);
