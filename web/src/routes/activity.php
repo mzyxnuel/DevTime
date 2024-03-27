@@ -1,8 +1,9 @@
 <?php
-   include("C:/xampp/htdocs/TimeCode/web/src/net/xml.php");
-   include("C:/xampp/htdocs/TimeCode/web/src/func.php");
+   include("../../../../.php");
+   include(import() . "/web/src/net/xml.php");
+   include(import() . "/web/src/func.php");
 
-   $content = req("C:/xampp/htdocs/TimeCode/web/src/net/xsd/activity.xsd");
+   $content = req(import() . "/web/src/net/xsd/activity.xsd");
    $xml = new SimpleXMLElement('<response/>');
 
    if(!$content){
