@@ -7,7 +7,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="748.0" prefWidth="1124.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="timecode.control.DashboardController">
    <children>
       <ImageView fitHeight="79.0" fitWidth="540.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true" x="14.0" y="12.0">
@@ -46,17 +45,12 @@
          </font>
       </Text>
       <ComboBox fx:id="projectselector" layoutX="877.0" layoutY="38.0" prefWidth="150.0" promptText="Project" />
-      <Text fx:id="name" fill="RED" layoutX="47.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0">
+      <Text fx:id="name" fill="WHITE" layoutX="45.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0">
          <font>
             <Font size="24.0" />
          </font>
       </Text>
-      <Text layoutX="146.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="'s coding time:">
-         <font>
-            <Font size="24.0" />
-         </font>
-      </Text>
-      <Text fx:id="time" layoutX="317.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0">
+      <Text fx:id="time" fill="#00ff59" layoutX="357.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0">
          <font>
             <Font size="24.0" />
          </font>
