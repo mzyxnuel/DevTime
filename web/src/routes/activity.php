@@ -1,5 +1,5 @@
 <?php
-   include("../../../../.php");
+   include("../../../.php");
    include(import() . "/web/src/net/xml.php");
    include(import() . "/web/src/func.php");
 

@@ -238,7 +238,7 @@
     // return [ ]
     function activity_languages($id_activity, $modify_rows_ext){
         try{
-            $conn = db();
+            $conn = db(); //TODO controlla l'estensione se è presente in ext, altrimenti ignora il file, (magari anche il numero di righe)
             foreach ($modify_rows_ext as $ext => $modify_rows) {
                 if($modify_rows != 0){
                     $query = $conn->prepare("INSERT INTO activities_languages VALUES (:id_activity, :ext, :modify_rows)");
