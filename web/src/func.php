@@ -10,26 +10,26 @@
         return new PDO("mysql:host=$host; dbname=$db; port=$port", $user, $password);
     }
 
-    // return [id_user: user exists - null: user doesnt exist]
+    // return [api_key: user exists - null: user doesnt exist]
     function check_user($email){
         $conn = db();
         try{
-            $query = $conn->prepare("SELECT id_user FROM users WHERE email = :email");
+            $query = $conn->prepare("SELECT api_key FROM users WHERE email = :email");
             $query->bindParam(':email', $email);
             $query->execute();
             $result = $query->fetch(PDO::FETCH_ASSOC);
-            return $result ? $result['id_user'] : null;
+            return $result ? $result['api_key'] : null;
         }catch(Exception $e){
             die("check_user: " . $e->getMessage());
         }
     }
 
     // return [true: psw is correct - false: psw isnt correct]
-    function check_psw($id_user, $password){
+    function check_psw($api_key, $password){
         $conn = db();
         try{
-            $query = $conn->prepare("SELECT psw FROM users WHERE id_user = :id_user");
-            $query->bindParam(':id_user', $id_user);
+            $query = $conn->prepare("SELECT psw FROM users WHERE api_key = :api_key");
+            $query->bindParam(':api_key', $api_key);
             $query->execute();
             $result = $query->fetch(PDO::FETCH_ASSOC);
             return $result && password_verify($password, $result['psw']) ? true : false;
@@ -38,29 +38,41 @@
         }
     }
 
-    // return [id_user: user exists - null: user doesnt exist]
-    function login($email, $password){
-        $id_user = check_user($email);
-        if(isset($id_user)){
-            if(!check_psw($id_user, $password))
-                return null;
+    // return [generated api key]
+    function api_key($length) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $random = '';
+        for ($i = 0; $i < $length; $i++) {
+            $random .= $characters[rand(0, strlen($characters) - 1)];
         }
-        return $id_user;
+        return $random;
     }
 
-    // return [id_user: new user - null: user already registered]
+    // return [api_key: user exists - null: user doesnt exist]
+    function login($email, $password){
+        $api_key = check_user($email);
+        if(isset($api_key)){
+            if(!check_psw($api_key, $password))
+                return null;
+        }
+        return $api_key;
+    }
+
+    // return [api_key: new user - null: user already registered]
     function signup($name, $surname, $email, $psw){
         $conn = db();
-        $id_user = check_user($email);
-        if(!isset($id_user)){
+        $api_key = check_user($email);
+        if(!isset($api_key)){
+            $api_key = api_key(20);
             try{
-                $query = $conn->prepare("INSERT INTO users VALUES(NULL, :name, :surname, :email, :psw, NOW())");
+                $query = $conn->prepare("INSERT INTO users VALUES(:api_key, :name, :surname, :email, :psw, NOW())");
+                $query->bindParam(':api_key', $api_key);
                 $query->bindParam(':name', $name);
                 $query->bindParam(':surname', $surname);
                 $query->bindParam(':email', $email);
                 $query->bindParam(':psw', $psw);
                 $query->execute();
-                return $conn->lastInsertId();
+                return $api_key;
             }catch(Exception $e){
                 die("signup: " . $e->getMessage());
             }
@@ -69,17 +81,17 @@
     }
 
     // return [ ]
-    function insert($id_user, $start, $end, $pr_name, $os, $files_container){
+    function insert($api_key, $start, $end, $pr_name, $os, $files_container){
         $date = date("Y-m-d", $start = time());
         $time = $end - $start;
         $id_os = check_os($os);
         $id_project = check_project($pr_name);
         if(!isset($id_project))
             $id_project = project($pr_name);
-        $id_activity = activity($id_user, $id_project, $id_os, $date, $time);
+        $id_activity = activity($api_key, $id_project, $id_os, $date, $time);
         $modify_rows_ext = modify_rows_ext($id_project, $files_container);
 
-        user_project($id_user, $id_project);
+        user_project($api_key, $id_project);
         project_languages($id_project, $modify_rows_ext);
         activity_languages($id_activity, $modify_rows_ext);
         return $id_activity;
@@ -113,11 +125,11 @@
     }
 
     // return [ ]
-    function user_project($id_user, $id_project){
+    function user_project($api_key, $id_project){
         $conn = db();
         try{
-            $query = $conn->prepare("INSERT IGNORE INTO users_projects VALUES(:id_user, :id_project)");
-            $query->bindParam(':id_user', $id_user);
+            $query = $conn->prepare("INSERT IGNORE INTO users_projects VALUES(:api_key, :id_project)");
+            $query->bindParam(':api_key', $api_key);
             $query->bindParam(':id_project', $id_project);
             $query->execute();
         }catch(Exception $e){
@@ -140,13 +152,13 @@
     }
 
     // return [id_activity]
-    function activity($id_user, $id_project, $id_os, $date, $time){
+    function activity($api_key, $id_project, $id_os, $date, $time){
         $conn = db();
         try{
-            $query = $conn->prepare("INSERT INTO activities VALUES(NULL, :date, :time, :id_user, :id_project, :id_os)");
+            $query = $conn->prepare("INSERT INTO activities VALUES(NULL, :date, :time, :api_key, :id_project, :id_os)");
             $query->bindParam(':date', $date);
             $query->bindParam(':time', $time);
-            $query->bindParam(':id_user', $id_user);
+            $query->bindParam(':api_key', $api_key);
             $query->bindParam(':id_project', $id_project);
             $query->bindParam(':id_os', $id_os);
             $query->execute();

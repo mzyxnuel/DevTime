@@ -11,10 +11,10 @@
       $email = $content->email;
       $password = $content->password;
 
-      $id_user = login($email, $password);
-      if(isset($id_user)){
+      $api_key = login($email, $password);
+      if(isset($api_key)){
          $xml->addChild('state', 'success/login');
-         $xml->addChild('id_user', $id_user);
+         $xml->addChild('api_key', $api_key);
       }else{
          $xml->addChild('state', 'error/login');
       }

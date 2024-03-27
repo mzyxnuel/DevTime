@@ -14,10 +14,10 @@
       $password = $content->password;
       $psw = password_hash($password, PASSWORD_BCRYPT);
 
-      $id_user = signup($name, $surname, $email, $psw);
-      if(isset($id_user)){
+      $api_key = signup($name, $surname, $email, $psw);
+      if(isset($api_key)){
          $xml->addChild('state', 'success/signup');
-         $xml->addChild('id_user', $id_user);
+         $xml->addChild('api_key', $api_key);
       }else{
          $xml->addChild('state', 'error/signup');
       }
