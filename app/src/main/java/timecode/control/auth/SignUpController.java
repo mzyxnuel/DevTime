@@ -47,7 +47,7 @@ public class SignUpController {
          String status = res.getState().substring(0, res.getState().indexOf("/")); // split the response state
 
          if (status.equals("success"))
-            new DotEnv().saveApiKey(res.getApiKey()); // save the api key in the .env file
+            new DotEnv().setApiKey(res.getApiKey()); // save the api key in the .env file
          else
             new MessageManager(res.getState());
 

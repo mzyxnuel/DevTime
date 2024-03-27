@@ -40,7 +40,7 @@ public class LoginController {
          String status = res.getState().substring(0, res.getState().indexOf("/"));
 
          if (status.equals("success"))
-            new DotEnv().saveApiKey(res.getApiKey());
+            new DotEnv().setApiKey(res.getApiKey());
          else
             new MessageManager(res.getState());
       } catch (URISyntaxException | IOException | InterruptedException e) {

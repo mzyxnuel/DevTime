@@ -27,7 +27,7 @@ import jakarta.xml.bind.annotation.XmlType;
  *   <complexContent>
  *     <restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       <sequence>
- *         <element name="id_user" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         <element name="api_key" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         <element name="start_time" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         <element name="end_time" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         <element name="project_name" type="{http://www.w3.org/2001/XMLSchema}string"/>
@@ -64,7 +64,7 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "idUser",
+    "apiKey",
     "startTime",
     "endTime",
     "projectName",
@@ -74,8 +74,8 @@ import jakarta.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "Activity")
 public class Activity {
 
-    @XmlElement(name = "id_user", required = true)
-    protected int idUser;
+    @XmlElement(name = "api_key", required = true)
+    protected String apiKey;
     @XmlElement(name = "start_time", required = true)
     protected long startTime;
     @XmlElement(name = "end_time", required = true)
@@ -90,8 +90,8 @@ public class Activity {
     public Activity() {
     }
 
-    public Activity(int idUser, long startTime, long endTime, String projectName, String os, FilesContainer filesContainer) {
-        this.idUser = idUser;
+    public Activity(String apiKey, long startTime, long endTime, String projectName, String os, FilesContainer filesContainer) {
+        this.apiKey = apiKey;
         this.startTime = startTime;
         this.endTime = endTime;
         this.projectName = projectName;
@@ -100,19 +100,19 @@ public class Activity {
     }
 
     /**
-     * Gets the value of the idUser property.
+     * Gets the value of the ApiKey property.
      *
      */
-    public int getIdUser() {
-        return idUser;
+    public String getApiKey() {
+        return apiKey;
     }
 
     /**
-     * Sets the value of the idUser property.
+     * Sets the value of the ApiKey property.
      *
      */
-    public void setIdUser(int value) {
-        this.idUser = value;
+    public void setApiKey(String value) {
+        this.apiKey = value;
     }
 
     /**

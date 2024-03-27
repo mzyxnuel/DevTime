@@ -27,7 +27,7 @@ public class DotEnv {
       return this.env.get(key);
    }
 
-   public void saveApiKey(String apiKey) throws IOException {
+   public void setApiKey(String apiKey) throws IOException {
       File key = new File("app/.env");
       List<String> lines = Files.readAllLines(key.toPath());
       boolean userExists = false;
@@ -44,5 +44,9 @@ public class DotEnv {
 
       App.setScene(new Scene(new FxmlManager().loadFXML("/ui/dashboard"))); //then start the dashboard if the user is logged
       new Thread(new EditorMonitor()).start();
+   }
+
+   public String getApiKey() {
+      return this.env.get("APIKEY");
    }
 }

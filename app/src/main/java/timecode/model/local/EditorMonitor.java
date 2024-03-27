@@ -15,6 +15,7 @@ import timecode.model.net.JAXB;
 import timecode.model.requests.Activity;
 import timecode.model.requests.Activity.FilesContainer;
 import timecode.model.requests.Activity.FilesContainer.FileContainer;
+import timecode.model.responses.ResponseState;
 
 public class EditorMonitor implements Runnable {
    private long startTime;
@@ -42,17 +43,24 @@ public class EditorMonitor implements Runnable {
             try {
                endTime = Instant.now().getEpochSecond();
 
-               Activity activity = new Activity(getIdUser(), startTime, endTime, getProjectName(), getOs(), getFiles());
+               Activity activity = new Activity(
+                  new DotEnv().getApiKey(),
+                  startTime,
+                  endTime,
+                  getProjectName(),
+                  getOs(),
+                  getFiles()
+               );
 
                String xml = new JAXB(Activity.class).marshal(activity);
                HttpResponse<String> response = new HttpHandler().http( // new request
                   "POST",
-                  "/index", // TODO path
+                  "/activity", 
                   xml
                );
 
-               System.out.println("[monitor] activity saved");
-               System.out.println(response.body()); //TODO display activity saved
+               ResponseState res = (ResponseState) new JAXB(ResponseState.class).unmarshal(response.body()); // unmarshal the response
+               new MessageManager(res.getState());
 
                actReg = false;
             } catch (URISyntaxException | IOException | InterruptedException e) {
@@ -69,10 +77,6 @@ public class EditorMonitor implements Runnable {
             e.printStackTrace();
          }
       }
-   }
-
-   private int getIdUser() {
-      return 0; //TODO
    }
 
    private String getProjectName() { // simulate the project folder
