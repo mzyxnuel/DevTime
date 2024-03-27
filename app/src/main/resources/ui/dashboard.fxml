@@ -1,53 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox alignment="CENTER" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1000.0" prefWidth="1728.0" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="timecode.control.auth.SignUpController">
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="748.0" prefWidth="1124.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="timecode.control.DashboardController">
    <children>
-      <AnchorPane prefHeight="1289.0" prefWidth="1948.0">
-         <children>
-            <Button layoutX="744.0" layoutY="584.0" mnemonicParsing="false" onMouseClicked="#signup" prefHeight="47.0" prefWidth="320.0" text="Sign Up" AnchorPane.bottomAnchor="486.0" AnchorPane.leftAnchor="744.0" AnchorPane.rightAnchor="664.0" AnchorPane.topAnchor="584.0">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </Button>
-            <PasswordField fx:id="password" layoutX="553.0" layoutY="459.0" prefHeight="47.0" prefWidth="320.0" promptText="Password">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </PasswordField>
-            <TextField fx:id="email" layoutX="554.0" layoutY="379.0" prefHeight="47.0" prefWidth="320.0" promptText="Email">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </TextField>
-            <Text layoutX="828.0" layoutY="785.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Already Registered?">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Text>
-            <Text layoutX="877.0" layoutY="812.0" onMouseClicked="#switchToLogin" strokeType="OUTSIDE" strokeWidth="0.0" text="Log In." underline="true">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Text>
-            <TextField fx:id="name" layoutX="934.0" layoutY="379.0" prefHeight="47.0" prefWidth="320.0" promptText="Name">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </TextField>
-            <TextField fx:id="surname" layoutX="934.0" layoutY="458.0" prefHeight="47.0" prefWidth="320.0" promptText="Surname">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </TextField>
-         </children>
-      </AnchorPane>
+      <ImageView fitHeight="79.0" fitWidth="540.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true" x="14.0" y="12.0">
+         <image>
+            <Image url="@../images/header.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="79.0" fitWidth="540.0" layoutX="556.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true" x="14.0" y="12.0">
+         <image>
+            <Image url="@../images/header.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="306.0" fitWidth="540.0" layoutX="15.0" layoutY="111.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/content.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="306.0" fitWidth="540.0" layoutX="1.0" layoutY="428.0" pickOnBounds="true" preserveRatio="true" x="14.0">
+         <image>
+            <Image url="@../images/content.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="306.0" fitWidth="540.0" layoutX="571.0" layoutY="111.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/content.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="306.0" fitWidth="540.0" layoutX="571.0" layoutY="428.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/content.png" />
+         </image>
+      </ImageView>
+      <Text layoutX="672.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select a project:">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <ComboBox fx:id="projectselector" layoutX="877.0" layoutY="38.0" prefWidth="150.0" promptText="Project" />
+      <Text fx:id="name" fill="RED" layoutX="47.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <Text layoutX="146.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="'s coding time:">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <Text fx:id="time" layoutX="317.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
    </children>
-</VBox>
+</AnchorPane>
