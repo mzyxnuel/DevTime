@@ -7,7 +7,9 @@ import java.util.List;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import io.github.cdimascio.dotenv.DotenvException;
+import javafx.scene.Scene;
 import timecode.view.App;
+import timecode.view.local.FxmlManager;
 
 public class DotEnv {
    private Dotenv env;
@@ -40,6 +42,7 @@ public class DotEnv {
          lines.add("APIKEY = " + apiKey); // set the APIKEY variable to a new one
       Files.write(key.toPath(), lines);
 
-      App.startApp("/ui/dashboard"); //then start the dashboard if the user is logged
+      App.setScene(new Scene(new FxmlManager().loadFXML("/ui/dashboard"))); //then start the dashboard if the user is logged
+      new Thread(new EditorMonitor()).start();
    }
 }
