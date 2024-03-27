@@ -25,11 +25,7 @@ public class DotEnv {
    public String get(String key) {
       return this.env.get(key);
    }
-
-   public boolean envProd() {
-      return Boolean.parseBoolean(this.env.get("PRODUCTION"));
-   }
-
+   
    public void saveUserId(BigInteger userId) throws IOException {
       File key = new File("app/.env");
       List<String> lines = Files.readAllLines(key.toPath());

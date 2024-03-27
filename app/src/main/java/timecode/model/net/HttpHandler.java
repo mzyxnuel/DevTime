@@ -12,17 +12,13 @@ import timecode.model.local.DotEnv;
 public class HttpHandler {
    private DotEnv env = new DotEnv();
    private HttpClient client = HttpClient.newHttpClient();
-   private String extension = "";
 
    public HttpResponse<String> http(String method, String uri, String content) throws URISyntaxException, IOException, InterruptedException {
-      if (!env.envProd())
-         extension = ".php";
 
       HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
          .uri(new URI(
             env.get("DOMAIN")
             + uri
-            + extension
          ))
          .header("Content-Type", "application/xml");
 
