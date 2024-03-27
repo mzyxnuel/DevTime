@@ -12,7 +12,7 @@ import timecode.model.local.MessageManager;
 import timecode.model.net.HttpHandler;
 import timecode.model.net.JAXB;
 import timecode.model.requests.SignUp;
-import timecode.model.responses.ResAuth;
+import timecode.model.responses.ResponseAuth;
 import timecode.view.App;
 
 public class SignUpController {
@@ -43,11 +43,11 @@ public class SignUpController {
             xml
          );
 
-         ResAuth res = (ResAuth) new JAXB(ResAuth.class).unmarshal(response.body()); // unmarshal the response
+         ResponseAuth res = (ResponseAuth) new JAXB(ResponseAuth.class).unmarshal(response.body()); // unmarshal the response
          String status = res.getState().substring(0, res.getState().indexOf("/")); // split the response state
 
          if (status.equals("success"))
-            new DotEnv().saveUserId(res.getIdUser()); // save the user id in the .env file
+            new DotEnv().saveApiKey(res.getApiKey()); // save the api key in the .env file
          else
             new MessageManager(res.getState());
 

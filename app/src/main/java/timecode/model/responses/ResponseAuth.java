@@ -7,8 +7,6 @@
 
 package timecode.model.responses;
 
-import java.math.BigInteger;
-
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
@@ -27,7 +25,7 @@ import jakarta.xml.bind.annotation.XmlType;
  *     <restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       <sequence>
  *         <element name="state" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         <element name="id_user" type="{http://www.w3.org/2001/XMLSchema}integer"/>
+ *         <element name="api_key" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       </sequence>
  *     </restriction>
  *   </complexContent>
@@ -39,22 +37,17 @@ import jakarta.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "state",
-    "idUser"
+    "apiKey"
 })
 @XmlRootElement(name = "response")
-public class ResAuth {
+public class ResponseAuth {
 
-    @XmlElement(required = true)
+    @XmlElement(name = "state",required = true)
     protected String state;
-    @XmlElement(name = "id_user", required = false)
-    protected BigInteger idUser;
+    @XmlElement(name = "api_key", required = false)
+    protected String apiKey;
 
-    public ResAuth() {
-    }
-
-    public ResAuth(String state, BigInteger idUser) {
-        this.state = state;
-        this.idUser = idUser;
+    public ResponseAuth() {
     }
 
     /**
@@ -82,27 +75,27 @@ public class ResAuth {
     }
 
     /**
-     * Gets the value of the idUser property.
+     * Gets the value of the apiKey property.
      *
      * @return
      *     possible object is
-     *     {@link BigInteger }
+     *     {@link String }
      *
      */
-    public BigInteger getIdUser() {
-        return idUser;
+    public String getApiKey() {
+        return apiKey;
     }
 
     /**
-     * Sets the value of the idUser property.
+     * Sets the value of the apiKey property.
      *
      * @param value
      *     allowed object is
-     *     {@link BigInteger }
+     *     {@link String }
      *
      */
-    public void setIdUser(BigInteger value) {
-        this.idUser = value;
+    public void setApiKey(String value) {
+        this.apiKey = value;
     }
 
 }

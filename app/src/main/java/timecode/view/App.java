@@ -24,7 +24,7 @@ public class App extends Application {
       stage = new Stage();
 
       String path = "";
-      if (new DotEnv().get("USER") == null)
+      if (new DotEnv().get("APIKEY") == null)
          path = "/ui/login";
       else
          startApp("/ui/dashboard");

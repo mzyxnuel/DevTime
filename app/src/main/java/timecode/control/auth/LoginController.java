@@ -12,7 +12,7 @@ import timecode.model.local.MessageManager;
 import timecode.model.net.HttpHandler;
 import timecode.model.net.JAXB;
 import timecode.model.requests.Login;
-import timecode.model.responses.ResAuth;
+import timecode.model.responses.ResponseAuth;
 import timecode.view.App;
 
 public class LoginController {
@@ -36,11 +36,11 @@ public class LoginController {
             xml
          );
 
-         ResAuth res = (ResAuth) new JAXB(ResAuth.class).unmarshal(response.body());
+         ResponseAuth res = (ResponseAuth) new JAXB(ResponseAuth.class).unmarshal(response.body());
          String status = res.getState().substring(0, res.getState().indexOf("/"));
 
          if (status.equals("success"))
-            new DotEnv().saveUserId(res.getIdUser());
+            new DotEnv().saveApiKey(res.getApiKey());
          else
             new MessageManager(res.getState());
       } catch (URISyntaxException | IOException | InterruptedException e) {

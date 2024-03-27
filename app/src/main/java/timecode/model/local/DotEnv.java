@@ -2,7 +2,6 @@ package timecode.model.local;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.nio.file.Files;
 import java.util.List;
 
@@ -25,20 +24,20 @@ public class DotEnv {
    public String get(String key) {
       return this.env.get(key);
    }
-   
-   public void saveUserId(BigInteger userId) throws IOException {
+
+   public void saveApiKey(String apiKey) throws IOException {
       File key = new File("app/.env");
       List<String> lines = Files.readAllLines(key.toPath());
       boolean userExists = false;
       for (int i = 0; i < lines.size(); i++) {
-         if (lines.get(i).startsWith("USER")) { // check if in all the .env lines there is a USER variable
-            lines.set(i, "USER = " + userId.toString()); // update USER variable to a new one
+         if (lines.get(i).startsWith("APIKEY")) { // check if in all the .env lines there is a APIKEY variable
+            lines.set(i, "APIKEY = " + apiKey); // update APIKEY variable to a new one
             userExists = true;
             break;
          }
       }
       if (!userExists)
-         lines.add("USER = " + userId.toString()); // set the user variable to a new one
+         lines.add("APIKEY = " + apiKey); // set the APIKEY variable to a new one
       Files.write(key.toPath(), lines);
 
       App.startApp("/ui/dashboard"); //then start the dashboard if the user is logged
