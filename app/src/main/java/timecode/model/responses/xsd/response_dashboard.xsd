@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="response">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="state" type="xs:string" minOccurs="1" />
+            <xs:element name="name" type="xs:string" minOccurs="1" />
+            <xs:element name="time" type="xs:long" minOccurs="1" />
+            <xs:element name="incremental_percentage" type="xs:double" minOccurs="1" />
+            <xs:element name="project_names_container">
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element name="project_name" type="xs:string" />
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+            <xs:element name="dates_container">
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element name="date_container" maxOccurs="31">
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="date" type="xs:int" />
+                              <xs:sequence>
+                                 <xs:element name="project_container">
+                                    <xs:complexType>
+                                       <xs:sequence>
+                                          <xs:element name="time" type="xs:long" />
+                                          <xs:element name="project_name" type="xs:string" />
+                                       </xs:sequence>
+                                    </xs:complexType>
+                                 </xs:element>
+                              </xs:sequence>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+            <xs:element name="oss_container">
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element name="os_container" maxOccurs="unbounded">
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="os_name" type="xs:string" />
+                              <xs:element name="percentage" type="xs:double" />
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+            <xs:element name="languages_container">
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element name="language_container" maxOccurs="unbounded">
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="language_name" type="xs:string" />
+                              <xs:element name="percentage" type="xs:double" />
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+</xs:schema>
