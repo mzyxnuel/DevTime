@@ -19,7 +19,9 @@
          $os = $content->os;
          $files_container = $content->files_container;
 
-         $result = insert($api_key, $start_time, $end_time,$project_name, $os, $files_container);
+         insert($api_key, $start_time, $end_time, $project_name, $os, $files_container);
+
+         $xml->addChild('state', 'success/activity');
       }
    }
 
@@ -28,20 +30,28 @@
       $api_key = $_GET['api_key'];
       $project = $_GET['project'];
 
-      $result = get_info($api_key, $project);
-      echo print_r($result);
+      if(check_api_key($api_key)){ // verifico se l'api key esiste
+         if(isset($project)){ // verifico se la richiesta riguarda uno specifico progetto
+            $id_project = check_project($project);
+            if(isset($id_project)){ // verifico se il progetto esiste
+               if(check_user_project($api_key, $id_project)){
+                  $ext_percentage = info_project_ext($project);
+                  echo print_r($ext_percentage);
+                  // $os_percentage = info_project_os($project);
+               }else{
+                  $xml->addChild('state', 'error/access_denied'); // l'utente non ha l'accesso al progetto
+               }
+            }else{
+               $xml->addChild('state', 'error/invalid_project_name'); // il nome del progetto è sbagliato
+            }
+         }else{
 
-      $xml->addChild('api_key', $api_key);
-      $xml->addChild('project', $project);
+         }
+      }else{
+         $xml->addChild('state', 'error/invalid_api_key'); // l'api key è sbagliata
+      }
    }
 
-   // xml response
-   // if($result){
-   //    $xml->addChild('state', 'success/activity');
-   // }else{
-   //    $xml->addChild('state','error/activity');
-   // }
-
-   // header("Content-Type: application/xml; charset=utf-8");
-   // echo $xml->asXML();
+   header("Content-Type: application/xml; charset=utf-8");
+   echo $xml->asXML();
 ?>

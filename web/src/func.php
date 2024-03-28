@@ -38,20 +38,6 @@
         }
     }
 
-    // return [true: api key is correct - false: api key isnt correct]
-    function check_api_key($api_key){
-        $conn = db();
-        try{
-            $query = $conn->prepare("SELECT * FROM users WHERE api_key = :api_key");
-            $query->bindParam(':api_key', $api_key);
-            $query->execute();
-            $result = $query->fetch(PDO::FETCH_ASSOC);
-            return $result !== false;
-        }catch(Exception $e){
-            die("check_api_key: " . $e->getMessage());
-        }
-    }
-
     // return [generated api key]
     function api_key($length) {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -108,7 +94,6 @@
         user_project($api_key, $id_project);
         project_languages($id_project, $modify_rows_ext);
         activity_languages($id_activity, $modify_rows_ext);
-        return $id_activity;
     }
 
     // return [id_project: project exists - null: project doesnt exist]
@@ -182,7 +167,7 @@
         }
     }
 
-    // return [rows per extension associative array after new activity]
+    // return [rows per extension after new activity - associative array]
     function new_rows_ext($files_container){
         $rows_ext = array();
         foreach ($files_container->file_container as $file) {
@@ -197,7 +182,7 @@
         return $rows_ext;
     }
 
-    // return [rows per extension associative array before new activity]
+    // return [rows per extension before new activity - associative array]
     function old_rows_ext($id_project){
         $conn = db();
         try{
@@ -214,7 +199,7 @@
         }
     }
 
-    // return [modify rows per extension associative array]
+    // return [modify rows per extension - associative array]
     function modify_rows_ext($id_project, $files_container){
         $new_rows_ext = new_rows_ext($files_container);
         $old_rows_ext = old_rows_ext($id_project);
@@ -267,30 +252,40 @@
         }
     }
 
-    function
-
-    function get_info($api_key, $project){
-        if(check_api_key($api_key)){
-            if(isset($project)){
-                $id_project = check_project($project);
-                if()
-                if(isset($id_project)){
-                    return info_project($id_project);
-                }else{
-                    return null;
-                }
-            }else{
-
-            }
-        }else{
-            return null;
+    // return [true: api key is correct - false: api key isnt correct]
+    function check_api_key($api_key){
+        $conn = db();
+        try{
+            $query = $conn->prepare("SELECT * FROM users WHERE api_key = :api_key");
+            $query->bindParam(':api_key', $api_key);
+            $query->execute();
+            $result = $query->fetch(PDO::FETCH_ASSOC);
+            return $result !== false;
+        }catch(Exception $e){
+            die("check_api_key: " . $e->getMessage());
         }
     }
 
-    function info_project($id_project){
+    // return [true: api key and project match - false: api key and project doesnt match]
+    function check_user_project($api_key, $id_project){
         $conn = db();
         try{
-            $query = $conn->prepare("SELECT L.name, ROUND(PL.num_rows / T.total_rows * 100, 1) AS percent
+            $query = $conn->prepare("SELECT * FROM users_projects WHERE api_key = :api_key AND id_project = :id_project");
+            $query->bindParam(':api_key', $api_key);
+            $query->bindParam('id_project', $id_project);
+            $query->execute();
+            $result = $query->fetch(PDO::FETCH_ASSOC);
+            return $result !== false;
+        }catch(Exception $e){
+            die("check_user_project: " . $e->getMessage());
+        }
+    }
+
+    // return [ TODO ]
+    function info_project_ext($id_project){
+        $conn = db();
+        try{
+            $query = $conn->prepare("SELECT L.name, ROUND(PL.num_rows / T.total_rows * 100, 1) AS percentage
                                      FROM projects_languages AS PL
                                      INNER JOIN languages AS L USING (ext)
                                      INNER JOIN (
@@ -299,6 +294,23 @@
                                      GROUP BY id_project
                                      ) AS T USING (id_project)
                                      WHERE PL.id_project = :id_project;");
+            $query->bindParam(':id_project', $id_project);
+            $query->execute();
+            $percentage_ext = array();
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $percentage_ext[$row['ext']] = $row['percentage'];
+            }
+            return $percentage_ext;
+        } catch(Exception $e){
+            die("info_project: " . $e->getMessage());
+        }
+    }
+
+    // return [ TODO ]
+    function info_project_os($project){
+        $conn = db();
+        try{
+            $query = $conn->prepare("");
             $query->bindParam(':id_project', $id_project);
             $query->execute();
             $result = $query->fetchAll(PDO::FETCH_ASSOC);
