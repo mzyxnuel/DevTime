@@ -29,18 +29,19 @@
       $project = $_GET['project'];
 
       $result = get_info($api_key, $project);
+      echo print_r($result);
 
       $xml->addChild('api_key', $api_key);
       $xml->addChild('project', $project);
    }
 
    // xml response
-   if($result){
-      $xml->addChild('state', 'success/activity');
-   }else{
-      $xml->addChild('state','error/activity');
-   }
+   // if($result){
+   //    $xml->addChild('state', 'success/activity');
+   // }else{
+   //    $xml->addChild('state','error/activity');
+   // }
 
-   header("Content-Type: application/xml; charset=utf-8");
-   echo $xml->asXML();
+   // header("Content-Type: application/xml; charset=utf-8");
+   // echo $xml->asXML();
 ?>

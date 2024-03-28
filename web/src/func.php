@@ -38,6 +38,20 @@
         }
     }
 
+    // return [true: api key is correct - false: api key isnt correct]
+    function check_api_key($api_key){
+        $conn = db();
+        try{
+            $query = $conn->prepare("SELECT * FROM users WHERE api_key = :api_key");
+            $query->bindParam(':api_key', $api_key);
+            $query->execute();
+            $result = $query->fetch(PDO::FETCH_ASSOC);
+            return $result !== false;
+        }catch(Exception $e){
+            die("check_api_key: " . $e->getMessage());
+        }
+    }
+
     // return [generated api key]
     function api_key($length) {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -253,20 +267,45 @@
         }
     }
 
+    function
+
     function get_info($api_key, $project){
         if(check_api_key($api_key)){
             if(isset($project)){
                 $id_project = check_project($project);
+                if()
                 if(isset($id_project)){
-
+                    return info_project($id_project);
                 }else{
                     return null;
                 }
             }else{
-                // info user
+
             }
         }else{
             return null;
         }
     }
+
+    function info_project($id_project){
+        $conn = db();
+        try{
+            $query = $conn->prepare("SELECT L.name, ROUND(PL.num_rows / T.total_rows * 100, 1) AS percent
+                                     FROM projects_languages AS PL
+                                     INNER JOIN languages AS L USING (ext)
+                                     INNER JOIN (
+                                     SELECT id_project, SUM(num_rows) AS total_rows
+                                     FROM projects_languages
+                                     GROUP BY id_project
+                                     ) AS T USING (id_project)
+                                     WHERE PL.id_project = :id_project;");
+            $query->bindParam(':id_project', $id_project);
+            $query->execute();
+            $result = $query->fetchAll(PDO::FETCH_ASSOC);
+            return $result;
+        } catch(Exception $e){
+            die("info_project: " . $e->getMessage());
+        }
+    }
+
 ?>

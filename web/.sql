@@ -102,3 +102,27 @@ INNER JOIN activities AS AC USING(id_activity)
 INNER JOIN users AS U USING(api_key)
 WHERE AC.api_key = '';
 -- avarage rows modified for each day
+
+SELECT L.name, ROUND(PL.num_rows / T.total_rows * 100, 1) AS percent
+FROM projects_languages AS PL
+INNER JOIN languages AS L USING (ext)
+INNER JOIN (
+   SELECT id_project, SUM(num_rows) AS total_rows
+   FROM projects_languages
+   GROUP BY id_project
+) AS T USING (id_project)
+WHERE PL.id_project = '0000000003';
+-- percent project
+
+SELECT L.name, ROUND(PL.num_rows / T.total_rows * 100, 1) AS percent
+FROM projects_languages AS PL
+INNER JOIN projects AS PR USING(id_project)
+INNER JOIN users_projects AS UR USING(id_project)
+INNER JOIN languages AS L USING (ext)
+INNER JOIN (
+   SELECT id_project, SUM(num_rows) AS total_rows
+   FROM projects_languages
+   GROUP BY id_project
+) AS T USING (id_project)
+WHERE UR.api_key = "tHmw03bVYtxqv6Augkxa"
+-- percent user
