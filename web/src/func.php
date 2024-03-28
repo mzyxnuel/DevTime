@@ -252,4 +252,21 @@
             die("activity_languages " . $e->getMessage());
         }
     }
+
+    function get_info($api_key, $project){
+        if(check_api_key($api_key)){
+            if(isset($project)){
+                $id_project = check_project($project);
+                if(isset($id_project)){
+
+                }else{
+                    return null;
+                }
+            }else{
+                // info user
+            }
+        }else{
+            return null;
+        }
+    }
 ?>
