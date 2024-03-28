@@ -29,7 +29,7 @@ public class App extends Application {
          scene = new Scene(new FxmlManager().loadFXML("/ui/login"));
       else {
          scene = new Scene(new FxmlManager().loadFXML("/ui/dashboard"));
-         new Thread(new EditorMonitor()).start();
+         new Thread(new EditorMonitor(), "monitor").start();
       }
 
       stage.setScene(scene);

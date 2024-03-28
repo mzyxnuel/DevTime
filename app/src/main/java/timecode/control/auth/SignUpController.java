@@ -1,10 +1,7 @@
 package timecode.control.auth;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.http.HttpResponse;
 
-import jakarta.xml.bind.JAXBException;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import timecode.model.local.DotEnv;
@@ -33,29 +30,23 @@ public class SignUpController {
       String nameField = name.getText();
       String surnameField = surname.getText();
 
-      try {
-         SignUp signup = new SignUp(nameField, surnameField, emailField, passwordField);
-         String xml = new JAXB(SignUp.class).marshal(signup); // marshal the request
 
-         HttpResponse<String> response = http.http( // send the request
-            "POST",
-            "/auth/signup",
-            xml
-         );
+      SignUp signup = new SignUp(nameField, surnameField, emailField, passwordField);
+      String xml = new JAXB(SignUp.class).marshal(signup); // marshal the request
 
-         ResponseAuth res = (ResponseAuth) new JAXB(ResponseAuth.class).unmarshal(response.body()); // unmarshal the response
-         String status = res.getState().substring(0, res.getState().indexOf("/")); // split the response state
+      HttpResponse<String> response = http.http( // send the request
+         "POST",
+         "/auth/signup",
+         xml
+      );
 
-         if (status.equals("success"))
-            new DotEnv().setApiKey(res.getApiKey()); // save the api key in the .env file
-         else
-            new MessageManager(res.getState());
+      ResponseAuth res = (ResponseAuth) new JAXB(ResponseAuth.class).unmarshal(response.body()); // unmarshal the response
+      String status = res.getState().substring(0, res.getState().indexOf("/")); // split the response state
 
-      } catch (URISyntaxException | IOException | InterruptedException e) {
-         new MessageManager("error/connection");
-      } catch (JAXBException e) {
-         new MessageManager("error/parsing");
-      }
+      if (status.equals("success"))
+         new DotEnv().setApiKey(res.getApiKey()); // save the api key in the .env file
+      else
+         new MessageManager(res.getState());
    }
 
    @FXML

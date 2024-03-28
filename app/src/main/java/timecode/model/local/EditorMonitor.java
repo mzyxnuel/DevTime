@@ -4,12 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.http.HttpResponse;
 import java.time.Instant;
 import java.util.List;
 
-import jakarta.xml.bind.JAXBException;
 import timecode.model.net.HttpHandler;
 import timecode.model.net.JAXB;
 import timecode.model.requests.Activity;
@@ -40,42 +38,34 @@ public class EditorMonitor implements Runnable {
             startTime = Instant.now().getEpochSecond();
             actReg = true;
          } else if (actReg && !isOpen) { // if the editor is closed and the activity is started, then finish the activity
-            try {
-               endTime = Instant.now().getEpochSecond();
+            endTime = Instant.now().getEpochSecond();
 
-               Activity activity = new Activity(
-                  new DotEnv().getApiKey(),
-                  startTime,
-                  endTime,
-                  getProjectName(),
-                  getOs(),
-                  getFiles()
-               );
+            Activity activity = new Activity(
+               new DotEnv().getApiKey(),
+               startTime,
+               endTime,
+               getProjectName(),
+               getOs(),
+               getFiles()
+            );
 
-               String xml = new JAXB(Activity.class).marshal(activity);
-               HttpResponse<String> response = new HttpHandler().http( // new request
-                  "POST",
-                  "/activity", 
-                  xml
-               );
+            String xml = new JAXB(Activity.class).marshal(activity);
+            HttpResponse<String> response = new HttpHandler().http( // new request
+               "POST",
+               "/activity",
+               xml
+            );
 
-               ResponseState res = (ResponseState) new JAXB(ResponseState.class).unmarshal(response.body()); // unmarshal the response
-               new MessageManager(res.getState());
+            ResponseState res = (ResponseState) new JAXB(ResponseState.class).unmarshal(response.body()); // unmarshal the response
+            new MessageManager(res.getState());
 
-               actReg = false;
-            } catch (URISyntaxException | IOException | InterruptedException e) {
-               System.out.println("error/connection");
-            } catch (JAXBException e) {
-               System.out.println("error/parsing");
-            }
+            actReg = false;
          }
 
          try {
-            System.out.println("[monitor]: is editor open: " + isOpen);
+            System.out.println("[" + Thread.currentThread().getName() + "]: is editor open: " + isOpen);
             Thread.sleep(1000);
-         } catch (InterruptedException e) {
-            e.printStackTrace();
-         }
+         } catch (InterruptedException e) { new MessageManager("error/system"); }
       }
    }
 
@@ -117,9 +107,7 @@ public class EditorMonitor implements Runnable {
          while (reader.readLine() != null)
             lines++;
          reader.close();
-      } catch (IOException e) {
-         e.printStackTrace();
-      }
+      } catch (IOException e) { new MessageManager("error/system"); }
       return lines;
    }
 

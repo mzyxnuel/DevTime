@@ -23,6 +23,8 @@ public class MessageManager {
          break;
       }
 
+      // xml connection system env
+
       switch (type) {
          case "login":
             text = "Login successfull";
