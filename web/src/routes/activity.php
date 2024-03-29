@@ -43,14 +43,16 @@
             $project_container->addChild('project_name', $project_name);
          }
 
-         $dates_container = $xml->addChild("dates_container"); // dates
-         // for($i = 0; $i<31; $i++){
-         //    $date_container = $dates_container->addChild('date_container');
-         //    $date_container->addChild('date', '');
-         //    $project_container = $date_container->addChild('project_container');
-         //    $project_container->addChild('time', '');
-         //    $project_container->addChild('name', '');
-         // }
+         $dates_container = $xml->addChild("dates_container");
+         foreach (get_activities($api_key) as $date => $date_container) {
+            $date_node = $dates_container->addChild('date_container');
+            $date_node->addChild('date', $date);
+            foreach ($date_container as $activity) {
+               $project_container = $date_node->addChild('project_container');
+               $project_container->addChild('time', $activity['time']);
+               $project_container->addChild('name', $activity['name']);
+            }
+         }
 
          $oss_container = $xml->addChild('oss_container');
          foreach(percentage_oss($api_key, $id_project) as $os_name => $percentage){

@@ -473,4 +473,50 @@
             die("percentage_oss: " . $e->getMessage());
         }
     }
+
+    // return [daily activities - associative array]
+    function get_activities($api_key){
+        $conn = db();
+        $activities = array();
+        $end = date('Y-m-d');
+        $start = date('Y-m-d', strtotime('-30 days'));
+
+        $all_activities = array();
+        $current_date = strtotime($start);
+        while ($current_date <= strtotime($end)) {
+            $all_activities[date('Y-m-d', $current_date)] = array();
+            $current_date = strtotime('+1 day', $current_date);
+        }
+
+        try {
+            $query = $conn->prepare("SELECT AC.date, PR.name, AC.time
+                                    FROM activities AS AC
+                                    INNER JOIN projects AS PR USING(id_project)
+                                    WHERE AC.date BETWEEN :start_date AND :end_date
+                                    AND AC.api_key = :api_key
+                                    ORDER BY AC.date");
+            $query->bindParam(':start_date', $start);
+            $query->bindParam(':end_date', $end);
+            $query->bindParam(':api_key', $api_key);
+            $query->execute();
+
+            while($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $date = $row['date'];
+                $name = $row['name'];
+                $time = $row['time'];
+                $activities[$date][] = array('name' => $name, 'time' => $time);
+            }
+
+            foreach($all_activities as $date => $activity) {
+                if (!isset($activities[$date])) {
+                    $activities[$date] = array();
+                }
+            }
+            ksort($activities);
+            return $activities;
+        } catch (Exception $e) {
+            die("get_activities: " . $e->getMessage());
+        }
+    }
+
 ?>
