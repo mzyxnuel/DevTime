@@ -471,7 +471,7 @@ public class ResponseDashboard {
         })
         public static class DateContainer {
 
-            protected int date;
+            protected String date;
             @XmlElement(name = "project_container", required = true)
             protected List<ResponseDashboard.DatesContainer.DateContainer.ProjectContainer> projectContainer;
 
@@ -479,7 +479,7 @@ public class ResponseDashboard {
              * Gets the value of the date property.
              *
              */
-            public int getDate() {
+            public String getDate() {
                 return date;
             }
 
@@ -487,7 +487,7 @@ public class ResponseDashboard {
              * Sets the value of the date property.
              *
              */
-            public void setDate(int value) {
+            public void setDate(String value) {
                 this.date = value;
             }
 

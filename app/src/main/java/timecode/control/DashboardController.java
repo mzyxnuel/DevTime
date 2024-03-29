@@ -2,6 +2,9 @@ package timecode.control;
 
 import java.net.URL;
 import java.net.http.HttpResponse;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -49,9 +52,7 @@ public class DashboardController implements Initializable {
    private Pane productivity;
 
    @Override
-   public void initialize(URL u, ResourceBundle r) {
-      make(null);
-   }
+   public void initialize(URL u, ResourceBundle r) { make(null); }
 
    private void make(String project) {
       HttpResponse<String> response = http.http(
@@ -65,8 +66,9 @@ public class DashboardController implements Initializable {
          String status = res.getState().substring(0, res.getState().indexOf("/"));
 
          if (status.equals("success")) {
-            initProjectSelector(res.getProjectNamesContainer());
             Platform.runLater(() -> {
+               clear();
+               initProjectSelector(res.getProjectNamesContainer());
                initLanguagesChart(res.getLanguagesContainer());
                initOssChart(res.getOssContainer());
                initProductivityChart(res.getIncrementalPercentage());
@@ -75,6 +77,13 @@ public class DashboardController implements Initializable {
          } else
             new MessageManager(res.getState());
       }
+   }
+
+   private void clear() {
+      selector.getItems().clear();
+      timechart.getData().clear();
+      languages.getData().clear();
+      oss.getData().clear();
    }
 
    private void initProjectSelector(ProjectNamesContainer pnc) {
@@ -87,15 +96,20 @@ public class DashboardController implements Initializable {
          projectsList.add(projectContainer.getProjectName());
 
       selector.setItems(projectsList);
-      selector.setOnAction(this::ui);
+      selector.setOnAction(this::ui); // when a project is selected start this method
    }
 
    private void ui(ActionEvent event) {
-      if (!selector.getValue().equals("All"))
-         make(selector.getValue());
-      else
-         make(null);
-   }
+      String selectedValue = selector.getValue();
+
+      if (selectedValue != null) {
+         if (!selectedValue.equals("All"))
+            make(selectedValue);
+         else
+            make(null);
+      }
+  }
+
 
    private void initTimeAreaChart(ProjectNamesContainer pnc, DatesContainer datesContainer) {
       NumberAxis x = new NumberAxis(1, 31, 1);
@@ -114,8 +128,8 @@ public class DashboardController implements Initializable {
          for (DateContainer date : datesContainer.getDateContainer()) {
             for (int j = 0; j < date.getProjectContainer().size(); j++) { // for each date if the pr.name is equal to the project
                if (date.getProjectContainer().get(j).getProjectName().equals(projectName)) {
-                  String visualDate = "a"; // Assicurati che questa variabile sia correttamente impostata
-                  Number visualTime = (Number) date.getProjectContainer().get(j).getTime();
+                  String visualDate = date.getDate();
+                  Number visualTime = convertUnix(date.getProjectContainer().get(j).getTime());
 
                   values.add(
                      new XYChart.Data<String, Number>( // set a new xychart data
@@ -129,6 +143,16 @@ public class DashboardController implements Initializable {
          series.setData(values);
          timechart.getData().add(series);
       }
+   }
+
+   private double convertUnix(long unix) {
+      Instant instant = Instant.ofEpochSecond(unix);
+      LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+
+      int hour = localDateTime.getHour();
+      int minute = localDateTime.getMinute();
+
+      return hour + (double) minute / 60;
    }
 
    private void initProductivityChart(double percentage) {
