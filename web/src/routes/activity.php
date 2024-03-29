@@ -28,27 +28,17 @@
    // request method get
    if($_SERVER['REQUEST_METHOD'] == 'GET'){
       $api_key = $_GET['api_key'];
-      $project = $_GET['project'];
+      $project = isset($_GET['project']) ? $_GET['project'] : null;
 
-      if(check_api_key($api_key)){ // verifico se l'api key esiste
-         if(isset($project)){ // verifico se la richiesta riguarda uno specifico progetto
-            $id_project = check_project($project);
-            if(isset($id_project)){ // verifico se il progetto esiste
-               if(check_user_project($api_key, $id_project)){
-                  $ext_percentage = info_project_ext($project);
-                  echo print_r($ext_percentage);
-                  // $os_percentage = info_project_os($project);
-               }else{
-                  $xml->addChild('state', 'error/access_denied'); // l'utente non ha l'accesso al progetto
-               }
-            }else{
-               $xml->addChild('state', 'error/invalid_project_name'); // il nome del progetto è sbagliato
-            }
-         }else{
-
+      $xml->addChild('state', check_request($api_key, $project));
+      if($xml->state == "success/get_info") {
+         $xml->addChild('name', $project ? $project : $api_key);
+         $xml->addChild('time', '');
+         $xml->addChild('incremental_percentage', '');
+         $project_names_container = $xml->addChild('project_names_container');
+         foreach(get_projects($api_key) as $project_name) {
+            $project_names_container->addChild('project_name', $project_name);
          }
-      }else{
-         $xml->addChild('state', 'error/invalid_api_key'); // l'api key è sbagliata
       }
    }
 

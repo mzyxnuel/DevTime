@@ -93,7 +93,7 @@ SELECT SUM(modify_rows) / (NOW() - U.date + 1) AS daily_modify_rows
 FROM activities_languages AS AL
 INNER JOIN activities AS AC USING(id_activity)
 INNER JOIN users AS U USING(api_key)
-WHERE AC.api_key = '';
+WHERE AC.api_key = 'BDJeOYMUYA1LB0UCV2So';
 -- avarage rows modified for each day
 
 SELECT L.name, ROUND(PL.num_rows / T.total_rows * 100, 1) AS percentage

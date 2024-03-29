@@ -281,19 +281,51 @@
         }
     }
 
+    // return [project names associated with api key]
+    function get_projects($api_key){
+        $conn = db();
+        try {
+            $query = $conn->prepare("SELECT PR.name
+                                    FROM users_projects AS UP
+                                    INNER JOIN projects AS PR USING(id_project)
+                                    WHERE UP.api_key = :api_key");
+            $query->bindParam(':api_key', $api_key);
+            $query->execute();
+            $result = $query->fetchAll(PDO::FETCH_COLUMN);
+            return $result;
+        } catch(PDOException $e) {
+            die("get_projects: " . $e->getMessage());
+        }
+    }
+
+    // return [state of the request]
+    function check_request($api_key, $project){
+        if(check_api_key($api_key)){
+            if(isset($project)){
+                $id_project = check_project($project);
+                if(isset($id_project)){
+                    if(check_user_project($api_key, $id_project)){
+                        return "success/get_info";
+                    }else{
+                        return "error/access_denied";
+                    }
+                }else{
+                    return "error/invalid_project_name";
+                }
+            }else{
+                return "success/get_info";
+            }
+        }else{
+            return "error/invalid_api_key";
+        }
+    }
+
     // return [ TODO ]
-    function info_project_ext($id_project){
+    function percentage_languages($api_key, $id_project){
         $conn = db();
         try{
-            $query = $conn->prepare("SELECT L.name, ROUND(PL.num_rows / T.total_rows * 100, 1) AS percentage
-                                     FROM projects_languages AS PL
-                                     INNER JOIN languages AS L USING (ext)
-                                     INNER JOIN (
-                                     SELECT id_project, SUM(num_rows) AS total_rows
-                                     FROM projects_languages
-                                     GROUP BY id_project
-                                     ) AS T USING (id_project)
-                                     WHERE PL.id_project = :id_project;");
+            $query_content = "";
+            $query = $conn->prepare($query_content);
             $query->bindParam(':id_project', $id_project);
             $query->execute();
             $percentage_ext = array();
@@ -319,5 +351,4 @@
             die("info_project: " . $e->getMessage());
         }
     }
-
 ?>
