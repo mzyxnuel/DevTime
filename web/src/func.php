@@ -85,7 +85,7 @@
         $temp = $start;
         $date = date("Y-m-d", $temp = time());
         $time = $end - $start;
-        $id_os = check_os($os);
+        $id_os = check_os(first_word($os));
         $id_project = check_project($pr_name);
         if(!isset($id_project))
             $id_project = project($pr_name);
@@ -149,6 +149,15 @@
         }catch(Exception $e){
             die("check_os: " . $e->getMessage());
         }
+    }
+
+    // return [first word of a string]
+    function first_word($os) {
+        $os = trim($os);
+        $i = strpos($os, ' ');
+        if(!$i)
+            return $o;
+        return substr($o, 0, $i);
     }
 
     // return [id_activity]
@@ -308,10 +317,7 @@
     function get_projects($api_key){
         $conn = db();
         try {
-            $query = $conn->prepare("SELECT PR.name
-                                    FROM users_projects AS UP
-                                    INNER JOIN projects AS PR USING(id_project)
-                                    WHERE UP.api_key = :api_key");
+            $query = $conn->prepare("SELECT PR.name FROM users_projects AS UP INNER JOIN projects AS PR USING(id_project) WHERE UP.api_key = :api_key");
             $query->bindParam(':api_key', $api_key);
             $query->execute();
             $result = $query->fetchAll(PDO::FETCH_COLUMN);
@@ -338,38 +344,133 @@
         }
     }
 
-    function incremental_percentage($api_key, $id_project){
-        // non ho voglia :)
-    }
-
-    // return [ TODO ]
-    function percentage_languages($api_key, $id_project){
+    // return [today modify rows]
+    function today_modify_rows($api_key, $id_project){
         $conn = db();
         try{
-            $query = $conn->prepare("");
-            $query->bindParam(':id_project', $id_project);
+            $query_content = "SELECT SUM(ABS(modify_rows)) AS today_modify_rows
+                              FROM activities_languages AS AL
+                              INNER JOIN activities AS AC USING(id_activity)
+                              INNER JOIN users AS U USING(api_key)
+                              WHERE AC.date = CURDATE()
+                              AND AC.api_key = :api_key";
+            if(isset($id_project)) $query_content .= " AND id_project = :id_project";
+            $query = $conn->prepare($query_content);
+            $query->bindParam(':api_key', $api_key);
+            if(isset($id_project)) $query->bindParam(':id_project', $id_project);
             $query->execute();
-            $percentage_ext = array();
-            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                $percentage_ext[$row['ext']] = $row['percentage'];
-            }
-            return $percentage_ext;
+            $result = $query->fetch(PDO::FETCH_ASSOC);
+            return $result ? $result['today_modify_rows'] : 0;
         } catch(Exception $e){
-            die("info_project: " . $e->getMessage());
+            die("today_modify_rows: " . $e->getMessage());
         }
     }
 
-    // return [ TODO ]
-    function info_project_os($project){
+    // return [avarage modified rows]
+    function avarage_modify_rows($api_key, $id_project){
         $conn = db();
         try{
-            $query = $conn->prepare("");
-            $query->bindParam(':id_project', $id_project);
+            $query_content = isset($id_project) ? "SELECT SUM(ABS(modify_rows)) / (DATEDIFF(CURDATE(), MIN(AC.date)) + 1) AS daily_modify_rows" :
+                                                  "SELECT SUM(ABS(modify_rows)) / (DATEDIFF(CURDATE(), U.date) + 1) AS daily_modify_rows";
+            $query_content .= " FROM activities_languages AS AL
+                                INNER JOIN activities AS AC USING(id_activity)
+                                INNER JOIN users AS U USING(api_key)
+                                WHERE AC.api_key = :api_key";
+            if(isset($id_project)) $query_content .= " AND AC.id_project = :id_project";
+            $query = $conn->prepare($query_content);
+            $query->bindParam(':api_key', $api_key);
+            if(isset($id_project)) $query->bindParam(':id_project', $id_project);
             $query->execute();
-            $result = $query->fetchAll(PDO::FETCH_ASSOC);
-            return $result;
+            $result = $query->fetch(PDO::FETCH_ASSOC);
+            return $result ? $result['daily_modify_rows'] : 0;
         } catch(Exception $e){
-            die("info_project: " . $e->getMessage());
+            die("avarage_modify_rows: " . $e->getMessage());
+        }
+    }
+
+    // return [incremental percentage]
+    function incremental_percentage($api_key, $id_project){
+        return round(today_modify_rows($api_key, $id_project) * 100 / avarage_modify_rows($api_key, $id_project), 1);
+    }
+
+    // return [percentage per languages - associative array]
+    function percentage_languages($api_key, $id_project){
+        $conn = db();
+        try{
+            $query_content = "  SELECT L.name, ROUND(PL.num_rows / T.total_rows * 100, 1) AS percentage
+                                FROM projects_languages AS PL
+                                INNER JOIN projects AS PR USING(id_project)
+                                INNER JOIN users_projects AS UP USING(id_project)
+                                INNER JOIN languages AS L USING(ext)";
+            if(isset($id_project)){
+                $query_content .= " INNER JOIN (
+                                        SELECT id_project, SUM(num_rows) AS total_rows
+                                        FROM projects_languages AS PL
+                                        GROUP BY id_project
+                                    ) AS T USING (id_project)
+                                    WHERE UP.api_key = :api_key
+                                    AND PL.id_project = :id_project";
+            }else{
+                $query_content .= " INNER JOIN(
+                                        SELECT UP.api_key, SUM(num_rows) AS total_rows
+                                        FROM projects_languages AS PL
+                                        INNER JOIN projects AS PR USING(id_project)
+                                        INNER JOIN users_projects AS UP USING(id_project)
+                                        GROUP BY UP.api_key
+                                    ) AS T USING(api_key)
+                                    WHERE UP.api_key = :api_key";
+            }
+            $query = $conn->prepare($query_content);
+            $query->bindParam(':api_key', $api_key);
+            if(isset($id_project)) $query->bindParam(':id_project', $id_project);
+            $query->execute();
+            $percentage_ext = array();
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $percentage_ext[$row['name']] = $row['percentage'];
+            }
+            return $percentage_ext;
+        } catch(Exception $e){
+            die("percentage_languages: " . $e->getMessage());
+        }
+    }
+
+    // return [percentage per operative system - associative array]
+    function percentage_oss($api_key, $id_project){
+        $conn = db();
+        try{
+            $query_content = "  SELECT O.name, ROUND(COUNT(*) * 100 / T.count, 1) AS percentage
+                                FROM activities AS AC
+                                INNER JOIN oss AS O USING(id_os)";
+            if(isset($id_project)){
+                $query_content .= " INNER JOIN(
+                                        SELECT api_key, COUNT(*) AS count
+                                        FROM activities
+                                        WHERE id_project = :id_project
+                                        GROUP BY api_key
+                                    ) AS T USING(api_key)
+                                    WHERE AC.api_key = :api_key
+                                    AND id_project = :id_project
+                                    GROUP BY O.name";
+            }else{
+                $query_content .= " INNER JOIN(
+                                        SELECT api_key, COUNT(*) AS count
+                                        FROM activities
+                                        GROUP BY api_key
+                                    ) AS T USING(api_key)
+                                    WHERE AC.api_key = :api_key
+                                    GROUP BY O.name";
+            }
+            $query = $conn->prepare($query_content);
+            $query->bindParam(':api_key', $api_key);
+            if(isset($id_project)) $query->bindParam(':id_project', $id_project);
+            $query->execute();
+            $percentage_os = array();
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $percentage_os[$row['name']] = $row['percentage'];
+            }
+            return $percentage_os;
+        } catch(Exception $e){
+            die("percentage_oss: " . $e->getMessage());
         }
     }
 ?>
