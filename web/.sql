@@ -79,17 +79,17 @@ CREATE TABLE activities_languages(
    ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-SELECT AVG(sum_modify_rows) AS avg_modify_rows
+SELECT ROUND(AVG(sum_modify_rows), 1) AS avg_modify_rows
 FROM (
    SELECT id_activity, SUM(modify_rows) AS sum_modify_rows
    FROM activities_languages
    INNER JOIN activities AS AC USING(id_activity)
-   WHERE AC.api_key = ''
+   WHERE AC.api_key = 'BDJeOYMUYA1LB0UCV2So'
    GROUP BY id_activity
 ) AS subtable;
 -- avarage rows modified for each activity
 
-SELECT SUM(modify_rows) / (NOW() - U.date + 1) AS daily_modify_rows
+SELECT ROUND(SUM(modify_rows) / DATEDIFF(NOW(), U.date) + 1, 1) AS daily_modify_rows
 FROM activities_languages AS AL
 INNER JOIN activities AS AC USING(id_activity)
 INNER JOIN users AS U USING(api_key)

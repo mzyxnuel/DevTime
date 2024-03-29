@@ -82,7 +82,8 @@
 
     // return [ ]
     function insert($api_key, $start, $end, $pr_name, $os, $files_container){
-        $date = date("Y-m-d", $start = time());
+        $temp = $start;
+        $date = date("Y-m-d", $temp = time());
         $time = $end - $start;
         $id_os = check_os($os);
         $id_project = check_project($pr_name);
@@ -281,23 +282,6 @@
         }
     }
 
-    // return [project names associated with api key]
-    function get_projects($api_key){
-        $conn = db();
-        try {
-            $query = $conn->prepare("SELECT PR.name
-                                    FROM users_projects AS UP
-                                    INNER JOIN projects AS PR USING(id_project)
-                                    WHERE UP.api_key = :api_key");
-            $query->bindParam(':api_key', $api_key);
-            $query->execute();
-            $result = $query->fetchAll(PDO::FETCH_COLUMN);
-            return $result;
-        } catch(PDOException $e) {
-            die("get_projects: " . $e->getMessage());
-        }
-    }
-
     // return [state of the request]
     function check_request($api_key, $project){
         if(check_api_key($api_key)){
@@ -320,12 +304,49 @@
         }
     }
 
+    // return [project names associated with api key]
+    function get_projects($api_key){
+        $conn = db();
+        try {
+            $query = $conn->prepare("SELECT PR.name
+                                    FROM users_projects AS UP
+                                    INNER JOIN projects AS PR USING(id_project)
+                                    WHERE UP.api_key = :api_key");
+            $query->bindParam(':api_key', $api_key);
+            $query->execute();
+            $result = $query->fetchAll(PDO::FETCH_COLUMN);
+            return $result;
+        } catch(PDOException $e) {
+            die("get_projects: " . $e->getMessage());
+        }
+    }
+
+    // return [time taken]
+    function get_time($api_key, $id_project){
+        $conn = db();
+        try{
+            $query_content = "SELECT SUM(time) AS sum_time FROM activities WHERE api_key = :api_key";
+            if(isset($id_project)) $query_content .= " AND id_project = :id_project";
+            $query = $conn->prepare($query_content);
+            $query->bindParam(':api_key', $api_key);
+            if(isset($id_project)) $query->bindParam(':id_project', $id_project);
+            $query->execute();
+            $result = $query->fetch(PDO::FETCH_ASSOC);
+            return $result ? $result['sum_time'] : null;
+        } catch(Exception $e){
+            die("get_time: " . $e->getMessage());
+        }
+    }
+
+    function incremental_percentage($api_key, $id_project){
+        // non ho voglia :)
+    }
+
     // return [ TODO ]
     function percentage_languages($api_key, $id_project){
         $conn = db();
         try{
-            $query_content = "";
-            $query = $conn->prepare($query_content);
+            $query = $conn->prepare("");
             $query->bindParam(':id_project', $id_project);
             $query->execute();
             $percentage_ext = array();

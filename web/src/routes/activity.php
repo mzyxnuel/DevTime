@@ -29,15 +29,25 @@
    if($_SERVER['REQUEST_METHOD'] == 'GET'){
       $api_key = $_GET['api_key'];
       $project = isset($_GET['project']) ? $_GET['project'] : null;
+      $id_project = isset($project) ? check_project($project) : null;
 
       $xml->addChild('state', check_request($api_key, $project));
       if($xml->state == "success/get_info") {
-         $xml->addChild('name', $project ? $project : $api_key);
-         $xml->addChild('time', '');
-         $xml->addChild('incremental_percentage', '');
-         $project_names_container = $xml->addChild('project_names_container');
+         $xml->addChild('name', $project ? $project : $api_key); // api key o project name
+         $xml->addChild('time', get_time($api_key, $id_project)); // time
+         $xml->addChild('incremental_percentage', incremental_percentage($api_key, $id_project)); // incremental percentage
+         $project_names_container = $xml->addChild('project_names_container'); // project names
          foreach(get_projects($api_key) as $project_name) {
-            $project_names_container->addChild('project_name', $project_name);
+            $project_container = $project_names_container->addChild('project_container');
+            $project_container->addChild('project_name', $project_name);
+         }
+         $dates_container = $xml->addChild("dates_container");
+         for($i = 0; $i<31; $i++){
+            $date_container = $dates_container->addChild('date_container');
+            $date_container->addChild('date', '');
+            $project_container = $date_container->addChild('project_container');
+            $project_container->addChild('time', '');
+            $project_container->addChild('name', '');
          }
       }
    }
