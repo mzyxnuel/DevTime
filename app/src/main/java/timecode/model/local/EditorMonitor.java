@@ -56,8 +56,10 @@ public class EditorMonitor implements Runnable {
                xml
             );
 
-            ResponseState res = (ResponseState) new JAXB(ResponseState.class).unmarshal(response.body()); // unmarshal the response
-            new MessageManager(res.getState());
+            if (response != null) {
+               ResponseState res = (ResponseState) new JAXB(ResponseState.class).unmarshal(response.body()); // unmarshal the response
+               new MessageManager(res.getState());
+            }
 
             actReg = false;
          }

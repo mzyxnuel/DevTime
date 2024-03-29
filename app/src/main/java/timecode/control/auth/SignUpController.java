@@ -40,13 +40,15 @@ public class SignUpController {
          xml
       );
 
-      ResponseAuth res = (ResponseAuth) new JAXB(ResponseAuth.class).unmarshal(response.body()); // unmarshal the response
-      String status = res.getState().substring(0, res.getState().indexOf("/")); // split the response state
+      if (response != null) {
+         ResponseAuth res = (ResponseAuth) new JAXB(ResponseAuth.class).unmarshal(response.body()); // unmarshal the response
+         String status = res.getState().substring(0, res.getState().indexOf("/")); // split the response state
 
-      if (status.equals("success"))
-         new DotEnv().setApiKey(res.getApiKey()); // save the api key in the .env file
-      else
-         new MessageManager(res.getState());
+         if (status.equals("success"))
+            new DotEnv().setApiKey(res.getApiKey()); // save the api key in the .env file
+         else
+            new MessageManager(res.getState());
+      }
    }
 
    @FXML

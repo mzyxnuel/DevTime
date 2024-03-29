@@ -1,5 +1,6 @@
 package timecode.model.local;
 
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import timecode.view.App;
 import timecode.view.components.PopUp;
@@ -43,6 +44,9 @@ public class MessageManager {
             text = "Unknown error";
             break;
       }
-      new PopUp(text, success, stage).show(stage);
+
+      Platform.runLater(() -> {
+         new PopUp(text, success, stage).show(stage);
+      });
    }
 }

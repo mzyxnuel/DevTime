@@ -32,13 +32,15 @@ public class LoginController {
          xml
       );
 
-      ResponseAuth res = (ResponseAuth) new JAXB(ResponseAuth.class).unmarshal(response.body());
-      String status = res.getState().substring(0, res.getState().indexOf("/"));
+      if (response != null) {
+         ResponseAuth res = (ResponseAuth) new JAXB(ResponseAuth.class).unmarshal(response.body());
+         String status = res.getState().substring(0, res.getState().indexOf("/"));
 
-      if (status.equals("success"))
-         new DotEnv().setApiKey(res.getApiKey());
-      else
-         new MessageManager(res.getState());
+         if (status.equals("success"))
+            new DotEnv().setApiKey(res.getApiKey());
+         else
+            new MessageManager(res.getState());
+      }
    }
 
    @FXML
