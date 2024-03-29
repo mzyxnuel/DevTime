@@ -1,5 +1,6 @@
 package timecode.view.components;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javafx.scene.Parent;
@@ -10,10 +11,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class SemiCircleChart extends Parent {
-   private List<Data> dataList;
-
-   public SemiCircleChart(List<Data> dataList, double percentage, boolean increase) {
-      this.dataList = dataList;
+   public SemiCircleChart(double percentage, boolean increase) {
+      List<SemiCircleChart.Data> dataList = new ArrayList<>();
       double centerX = 120; // coordinates for the center of the chart
       double centerY = 210;
       double radius = 180; // radius of the chart
@@ -21,6 +20,8 @@ public class SemiCircleChart extends Parent {
       double totalValues = 0;
       double totalAngle = 180;
       String text = percentage + "% ";
+
+      dataList.add(new Data(percentage));
 
       if (increase) {
          text +=  "Increase";
@@ -76,10 +77,6 @@ public class SemiCircleChart extends Parent {
       this.getChildren().add(statusText);
    }
 
-   public List<Data> getDataList() {
-      return dataList;
-   }
-
    public static final class Data {
       private double value;
       private Color color;
@@ -103,6 +100,10 @@ public class SemiCircleChart extends Parent {
 
       public void setColor(Color color) {
          this.color = color;
+      }
+
+      public void setValue(double value) {
+         this.value = value;
       }
    }
 }

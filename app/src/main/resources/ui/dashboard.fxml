@@ -50,7 +50,7 @@
             <Font size="24.0" />
          </font>
       </Text>
-      <ComboBox fx:id="selector" layoutX="877.0" layoutY="38.0" prefWidth="150.0" promptText="Project" />
+      <ComboBox fx:id="selector" layoutX="877.0" layoutY="38.0" prefWidth="150.0" promptText="All" />
       <Text fx:id="name" fill="WHITE" layoutX="45.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0">
          <font>
             <Font size="24.0" />
