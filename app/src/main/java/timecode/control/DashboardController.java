@@ -17,7 +17,6 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import timecode.view.components.SemiCircleChart;
 
@@ -73,11 +72,9 @@ public class DashboardController implements Initializable {
 
    private void initProductivityChart() {
       List<SemiCircleChart.Data> dataList = new ArrayList<>();
-      dataList.add(new SemiCircleChart.Data("data1", 1, Color.RED));
-      dataList.add(new SemiCircleChart.Data("data2", 2, Color.GREEN));
-      dataList.add(new SemiCircleChart.Data("data3", 3, Color.BLUE));
+      dataList.add(new SemiCircleChart.Data(70));
 
-      SemiCircleChart semicircleChart = new SemiCircleChart(dataList);
+      SemiCircleChart semicircleChart = new SemiCircleChart(dataList, 70, false);
       productivity.getChildren().add(semicircleChart);
    }
 

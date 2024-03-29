@@ -14,6 +14,12 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="748.0" prefWidth="1124.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="timecode.control.DashboardController">
    <children>
+      <ImageView fitHeight="306.0" fitWidth="540.0" layoutX="1.0" layoutY="428.0" pickOnBounds="true" preserveRatio="true" x="14.0">
+         <image>
+            <Image url="@../images/content.png" />
+         </image>
+      </ImageView>
+      <Pane fx:id="productivity" layoutX="167.0" layoutY="478.0" prefHeight="236.0" prefWidth="236.0" />
       <ImageView fitHeight="79.0" fitWidth="540.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true" x="14.0" y="12.0">
          <image>
             <Image url="@../images/header.png" />
@@ -25,11 +31,6 @@
          </image>
       </ImageView>
       <ImageView fitHeight="306.0" fitWidth="540.0" layoutX="15.0" layoutY="111.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/content.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="306.0" fitWidth="540.0" layoutX="1.0" layoutY="428.0" pickOnBounds="true" preserveRatio="true" x="14.0">
          <image>
             <Image url="@../images/content.png" />
          </image>
@@ -70,7 +71,6 @@
           <NumberAxis side="LEFT" />
         </yAxis>
       </AreaChart>
-      <Pane fx:id="productivity" layoutX="167.0" layoutY="478.0" prefHeight="236.0" prefWidth="236.0" />
       <Text layoutX="240.0" layoutY="468.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Productivity">
          <font>
             <Font size="18.0" />

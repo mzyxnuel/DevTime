@@ -6,11 +6,13 @@ import javafx.scene.Parent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 public class SemiCircleChart extends Parent {
    private List<Data> dataList;
 
-   public SemiCircleChart(List<Data> dataList) {
+   public SemiCircleChart(List<Data> dataList, double percentage, boolean increase) {
       this.dataList = dataList;
       double centerX = 120; // coordinates for the center of the chart
       double centerY = 210;
@@ -18,6 +20,17 @@ public class SemiCircleChart extends Parent {
       double innerHoleRadius = 120; // radius of the inner hole in the chart
       double totalValues = 0;
       double totalAngle = 180;
+      String text = percentage + "% ";
+
+      if (increase) {
+         text +=  "Increase";
+         dataList.get(0).setColor(Color.GREEN);
+      } else {
+         text +=  "Descrease";
+         dataList.get(0).setColor(Color.RED);
+      }
+
+      dataList.add(new SemiCircleChart.Data(100 - percentage, Color.GRAY)); // calculate the remaining data
 
       for (Data data : dataList)
          totalValues += data.getValue();
@@ -54,6 +67,13 @@ public class SemiCircleChart extends Parent {
       hole.setLength(180);
       hole.setFill(Color.rgb(49,49,49));
       this.getChildren().add(hole);
+
+      Text statusText = new Text(text);
+      statusText.setX(centerX - statusText.getLayoutBounds().getWidth() / 2 - 10);
+      statusText.setY(centerY - statusText.getLayoutBounds().getHeight() / 2 - 20);
+      statusText.setFont(new Font(16));
+
+      this.getChildren().add(statusText);
    }
 
    public List<Data> getDataList() {
@@ -61,18 +81,16 @@ public class SemiCircleChart extends Parent {
    }
 
    public static final class Data {
-      private String name;
       private double value;
       private Color color;
 
-      public Data(String name, double value, Color color) {
-         this.name = name;
+      public Data(double value, Color color) {
          this.value = value;
          this.color = color;
       }
 
-      public String getName() {
-         return name;
+      public Data(double value) {
+         this.value = value;
       }
 
       public double getValue() {
@@ -81,6 +99,10 @@ public class SemiCircleChart extends Parent {
 
       public Color getColor() {
          return color;
+      }
+
+      public void setColor(Color color) {
+         this.color = color;
       }
    }
 }
