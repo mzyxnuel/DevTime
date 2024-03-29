@@ -7,6 +7,7 @@ import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import timecode.model.local.DotEnv;
 import timecode.model.local.EditorMonitor;
@@ -34,6 +35,8 @@ public class App extends Application {
 
       stage.setScene(scene);
       stage.setResizable(false);
+      stage.getIcons().add(new Image(App.class.getResourceAsStream("/icons/timecode.png")));
+      stage.setTitle("TimeCode");
       stage.show();
    }
 

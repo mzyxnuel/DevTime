@@ -159,7 +159,7 @@ public class DashboardController implements Initializable {
       double realPercentage = Math.abs(percentage - 100);
       boolean increase = false;
 
-      if (percentage > 100)
+      if (percentage >= 100)
          increase = true;
 
       SemiCircleChart semicircleChart = new SemiCircleChart(realPercentage, increase);
