@@ -1,6 +1,8 @@
 package timecode.control;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
@@ -14,11 +16,14 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import timecode.view.components.SemiCircleChart;
 
 public class DashboardController implements Initializable {
    @FXML
-   private ComboBox<String> projectselector;
+   private ComboBox<String> selector;
    @FXML
    private Text name;
    @FXML
@@ -26,18 +31,21 @@ public class DashboardController implements Initializable {
    @FXML
    private PieChart oss;
    @FXML
-   private AreaChart<String, Number> projecttime;
+   private AreaChart<String, Number> timechart;
+   @FXML
+   private Pane productivity;
 
    @Override
    public void initialize(URL u, ResourceBundle r) {
       initProjectSelector();
       initLanguagesChart();
       initOssChart();
-      initIncrementChart();
-      initProjectTimeAreaChart();
+      initProductivityChart();
+      initTimeAreaChart();
    }
 
-   private void initProjectTimeAreaChart() {
+   private void initTimeAreaChart() {
+      timechart.setTitle("Hours per day");
       NumberAxis x = new NumberAxis(1, 31, 1);
       x.setLabel("Day");
 
@@ -49,7 +57,7 @@ public class DashboardController implements Initializable {
       ex.setName("Example");
       IntStream.range(1, 31)
          .forEach(i -> ex.getData().add(
-            new XYChart.Data<String, Number>("esempio" + i, i * 10) // Assuming you want to multiply i by 10 for each value
+            new XYChart.Data<String, Number>("" + i, i * 10) // Assuming you want to multiply i by 10 for each value
          ));
 
       XYChart.Series<String, Number> ex2 = new XYChart.Series<String, Number>();
@@ -57,15 +65,20 @@ public class DashboardController implements Initializable {
       ex2.setName("Example2");
       IntStream.range(1, 31)
          .forEach(i -> ex2.getData().add(
-            new XYChart.Data<String, Number>("esempio" + i, i * 11) // Assuming you want to multiply i by 10 for each value
+            new XYChart.Data<String, Number>("" + i, i * 11) // Assuming you want to multiply i by 10 for each value
          ));
 
-      projecttime.getData().addAll(ex, ex2);
+      timechart.getData().addAll(ex, ex2);
    }
 
-   private void initIncrementChart() {
-      // TODO Auto-generated method stub
-      // throw new UnsupportedOperationException("Unimplemented method 'initIncrementChart'");
+   private void initProductivityChart() {
+      List<SemiCircleChart.Data> dataList = new ArrayList<>();
+      dataList.add(new SemiCircleChart.Data("data1", 1, Color.RED));
+      dataList.add(new SemiCircleChart.Data("data2", 2, Color.GREEN));
+      dataList.add(new SemiCircleChart.Data("data3", 3, Color.BLUE));
+
+      SemiCircleChart semicircleChart = new SemiCircleChart(dataList);
+      productivity.getChildren().add(semicircleChart);
    }
 
    private void initOssChart() {
@@ -92,12 +105,12 @@ public class DashboardController implements Initializable {
 
    private void initProjectSelector() {
       String[] projects = {"p1","p2","p3"};
-      projectselector.getItems().addAll(projects);
-      projectselector.setOnAction(this::updateHeader);
+      selector.getItems().addAll(projects);
+      selector.setOnAction(this::updateHeader);
    }
 
    private void updateHeader(ActionEvent event) {
-      String selectedProject = projectselector.getValue();
+      String selectedProject = selector.getValue();
 		name.setText(selectedProject);
    }
 }
