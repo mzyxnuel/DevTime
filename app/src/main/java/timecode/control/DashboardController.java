@@ -2,11 +2,10 @@ package timecode.control;
 
 import java.net.URL;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.IntStream;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,9 +24,13 @@ import timecode.model.net.HttpHandler;
 import timecode.model.net.JAXB;
 import timecode.model.responses.ResponseDashboard;
 import timecode.model.responses.ResponseDashboard.DatesContainer;
+import timecode.model.responses.ResponseDashboard.DatesContainer.DateContainer;
 import timecode.model.responses.ResponseDashboard.LanguagesContainer;
+import timecode.model.responses.ResponseDashboard.LanguagesContainer.LanguageContainer;
 import timecode.model.responses.ResponseDashboard.OssContainer;
+import timecode.model.responses.ResponseDashboard.OssContainer.OsContainer;
 import timecode.model.responses.ResponseDashboard.ProjectNamesContainer;
+import timecode.model.responses.ResponseDashboard.ProjectNamesContainer.ProjectContainer;
 import timecode.view.components.SemiCircleChart;
 
 public class DashboardController implements Initializable {
@@ -46,7 +49,9 @@ public class DashboardController implements Initializable {
    private Pane productivity;
 
    @Override
-   public void initialize(URL u, ResourceBundle r) { make(null); }
+   public void initialize(URL u, ResourceBundle r) {
+      make(null);
+   }
 
    private void make(String project) {
       HttpResponse<String> response = http.http(
@@ -61,21 +66,27 @@ public class DashboardController implements Initializable {
 
          if (status.equals("success")) {
             initProjectSelector(res.getProjectNamesContainer());
-            initLanguagesChart(res.getLanguagesContainer());
-            initOssChart(res.getOssContainer());
-            initProductivityChart(res.getIncrementalPercentage());
-            initTimeAreaChart(res.getDatesContainer());
+            Platform.runLater(() -> {
+               initLanguagesChart(res.getLanguagesContainer());
+               initOssChart(res.getOssContainer());
+               initProductivityChart(res.getIncrementalPercentage());
+               initTimeAreaChart(res.getProjectNamesContainer(), res.getDatesContainer());
+            });
          } else
             new MessageManager(res.getState());
       }
    }
 
    private void initProjectSelector(ProjectNamesContainer pnc) {
-      String[] projects = {"All"};
-      for (int i = 1; i < pnc.getProjectContainer().size(); i++)
-         projects[i] = pnc.getProjectContainer().get(i).getProjectName();
+      List<ProjectContainer> projectContainers = pnc.getProjectContainer();
 
-      selector.getItems().addAll(projects);
+      ObservableList<String> projectsList = FXCollections.observableArrayList();
+      projectsList.add("All");
+
+      for (ProjectContainer projectContainer : projectContainers)
+         projectsList.add(projectContainer.getProjectName());
+
+      selector.setItems(projectsList);
       selector.setOnAction(this::ui);
    }
 
@@ -86,60 +97,69 @@ public class DashboardController implements Initializable {
          make(null);
    }
 
-   private void initTimeAreaChart(DatesContainer datesContainer) {
-      timechart.setTitle("Hours per day");
+   private void initTimeAreaChart(ProjectNamesContainer pnc, DatesContainer datesContainer) {
       NumberAxis x = new NumberAxis(1, 31, 1);
       x.setLabel("Day");
 
       NumberAxis y = new NumberAxis();
       y.setLabel("Time");
 
-      XYChart.Series<String, Number> ex = new XYChart.Series<String, Number>();
+      for (int i = 0; i < pnc.getProjectContainer().size(); i++) {
+         String projectName = pnc.getProjectContainer().get(i).getProjectName();
+         ObservableList<XYChart.Data<String, Number>> values = FXCollections.observableArrayList();
 
-      ex.setName("Example");
-      IntStream.range(1, 31)
-         .forEach(i -> ex.getData().add(
-            new XYChart.Data<String, Number>("" + i, i * 10) // Assuming you want to multiply i by 10 for each value
-         ));
+         XYChart.Series<String, Number> series = new XYChart.Series<String, Number>();
+         series.setName(projectName); // create a new series for each project
 
-      XYChart.Series<String, Number> ex2 = new XYChart.Series<String, Number>();
+         for (DateContainer date : datesContainer.getDateContainer()) {
+            for (int j = 0; j < date.getProjectContainer().size(); j++) { // for each date if the pr.name is equal to the project
+               if (date.getProjectContainer().get(j).getProjectName().equals(projectName)) {
+                  String visualDate = "a"; // Assicurati che questa variabile sia correttamente impostata
+                  Number visualTime = (Number) date.getProjectContainer().get(j).getTime();
 
-      ex2.setName("Example2");
-      IntStream.range(1, 31)
-         .forEach(i -> ex2.getData().add(
-            new XYChart.Data<String, Number>("" + i, i * 11) // Assuming you want to multiply i by 10 for each value
-         ));
-
-      timechart.getData().addAll(ex, ex2);
+                  values.add(
+                     new XYChart.Data<String, Number>( // set a new xychart data
+                        visualDate,
+                        visualTime
+                     )
+                  );
+               }
+            }
+         }
+         series.setData(values);
+         timechart.getData().add(series);
+      }
    }
 
-   private void initProductivityChart(double d) {
-      List<SemiCircleChart.Data> dataList = new ArrayList<>();
-      dataList.add(new SemiCircleChart.Data(70));
+   private void initProductivityChart(double percentage) {
+      double realPercentage = Math.abs(percentage - 100);
+      boolean increase = false;
 
-      SemiCircleChart semicircleChart = new SemiCircleChart(dataList, 70, false);
+      if (percentage > 100)
+         increase = true;
+
+      SemiCircleChart semicircleChart = new SemiCircleChart(realPercentage, increase);
+
       productivity.getChildren().add(semicircleChart);
    }
 
    private void initOssChart(OssContainer ossContainer) {
       oss.setTitle("Operating Systems");
-      ObservableList<PieChart.Data> data = FXCollections.observableArrayList(
-            new PieChart.Data("A", 10),
-            new PieChart.Data("B", 30),
-            new PieChart.Data("C", 100)
-         );
+      ObservableList<PieChart.Data> ossData = FXCollections.observableArrayList();
 
-      oss.setData(data);
+      for (OsContainer os : ossContainer.getOsContainer())
+         ossData.add(new PieChart.Data(os.getOsName(), os.getPercentage()));
+
+      oss.setData(ossData);
    }
 
    private void initLanguagesChart(LanguagesContainer languagesContainer) {
       languages.setTitle("Languages");
-      ObservableList<PieChart.Data> data = FXCollections.observableArrayList(
-            new PieChart.Data("A", 10),
-            new PieChart.Data("B", 30),
-            new PieChart.Data("C", 100)
-         );
+      ObservableList<PieChart.Data> languagesData = FXCollections.observableArrayList();
 
-      languages.setData(data);
+      for (LanguageContainer language : languagesContainer.getLanguageContainer())
+         languagesData.add(new PieChart.Data(language.getLanguageName(), language.getPercentage()));
+
+      languages.setData(languagesData);
    }
 }
