@@ -78,7 +78,7 @@ public class DashboardController implements Initializable {
                initLanguagesChart(res.getLanguagesContainer());
                initOssChart(res.getOssContainer());
                initProductivityChart(res.getIncrementalPercentage());
-               initTimeAreaChart(res.getProjectNamesContainer(), res.getDatesContainer());
+               initTimeAreaChart(res.getProjectNamesContainer(), res.getDatesContainer(), project);
             });
          } else
             new MessageManager(res.getState());
@@ -112,7 +112,7 @@ public class DashboardController implements Initializable {
 
    private void ui(ActionEvent event) {
       String selectedValue = selector.getValue();
-
+      // TODO FIX System.out.println("VALORE:" + selectedValue);
       if (selectedValue != null) {
          if (!selectedValue.equals("All"))
             make(selectedValue);
@@ -121,8 +121,7 @@ public class DashboardController implements Initializable {
       }
   }
 
-
-   private void initTimeAreaChart(ProjectNamesContainer pnc, DatesContainer datesContainer) {
+   private void initTimeAreaChart(ProjectNamesContainer pnc, DatesContainer datesContainer, String project) {
       NumberAxis x = new NumberAxis(1, 31, 1);
       x.setLabel("Day");
 
@@ -133,13 +132,18 @@ public class DashboardController implements Initializable {
          String projectName = pnc.getProjectContainer().get(i).getProjectName();
          ObservableList<XYChart.Data<String, Number>> values = FXCollections.observableArrayList();
 
+         if (project != null && !projectName.equals(project))
+            continue;
+
          XYChart.Series<String, Number> series = new XYChart.Series<String, Number>();
          series.setName(projectName); // create a new series for each project
 
          for (DateContainer date : datesContainer.getDateContainer()) {
+            String visualDate = date.getDate();
+            boolean found = false;
+
             for (int j = 0; j < date.getProjectContainer().size(); j++) { // for each date if the pr.name is equal to the project
                if (date.getProjectContainer().get(j).getProjectName().equals(projectName)) {
-                  String visualDate = date.getDate();
                   Number visualTime = convertUnix(date.getProjectContainer().get(j).getTime());
 
                   values.add(
@@ -148,9 +152,20 @@ public class DashboardController implements Initializable {
                         visualTime
                      )
                   );
+                  found = true;
                }
             }
+
+            if (!found) {
+               values.add(
+                  new XYChart.Data<String, Number>( // set a new xychart data
+                     visualDate,
+                     0
+                  )
+               );
+            }
          }
+
          series.setData(values);
          timechart.getData().add(series);
       }
