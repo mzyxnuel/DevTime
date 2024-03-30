@@ -24,7 +24,7 @@ public class MessageManager {
          break;
       }
 
-      // xml connection system env
+      //TODO  xml connection system env
 
       switch (type) {
          case "login":

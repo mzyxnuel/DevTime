@@ -41,7 +41,7 @@ public class DashboardController implements Initializable {
    @FXML
    private ComboBox<String> selector;
    @FXML
-   private Text name;
+   private Text header;
    @FXML
    private PieChart languages;
    @FXML
@@ -55,9 +55,14 @@ public class DashboardController implements Initializable {
    public void initialize(URL u, ResourceBundle r) { make(null); }
 
    private void make(String project) {
+      String projectParam = "";
+
+      if (project != null)
+         projectParam = "&project=" + project;
+
       HttpResponse<String> response = http.http(
          "GET",
-         "/activity?api_key=" + new DotEnv().getApiKey() + "&project=" + project,
+         "/activity?api_key=" + new DotEnv().getApiKey() + projectParam,
          null
       );
 
@@ -69,6 +74,7 @@ public class DashboardController implements Initializable {
             Platform.runLater(() -> {
                clear();
                initProjectSelector(res.getProjectNamesContainer());
+               initHeader(res.getName(), res.getTime());
                initLanguagesChart(res.getLanguagesContainer());
                initOssChart(res.getOssContainer());
                initProductivityChart(res.getIncrementalPercentage());
@@ -79,11 +85,16 @@ public class DashboardController implements Initializable {
       }
    }
 
+   private void initHeader(String name, long time) {
+      header.setText(name + "'s coding time: " + String.format("%.1f", convertUnix(time)) + "h");
+   }
+
    private void clear() {
       selector.getItems().clear();
       timechart.getData().clear();
       languages.getData().clear();
       oss.getData().clear();
+      header.setText("");
    }
 
    private void initProjectSelector(ProjectNamesContainer pnc) {
