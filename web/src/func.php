@@ -433,6 +433,10 @@
                                     ) AS T USING(api_key)
                                     WHERE UP.api_key = :api_key";
             }
+
+            $query_content .= " ORDER BY percentage DESC
+                                LIMIT 4";
+
             $query = $conn->prepare($query_content);
             $query->bindParam(':api_key', $api_key);
             if(isset($id_project)) $query->bindParam(':id_project', $id_project);
