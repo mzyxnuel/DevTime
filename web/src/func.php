@@ -85,7 +85,7 @@
         $temp = $start;
         $date = date("Y-m-d", $temp = time());
         $time = $end - $start;
-        $id_os = check_os(first_word($os));
+        $id_os = check_os(get_os($os));
         $id_project = check_project($pr_name);
         if(!isset($id_project))
             $id_project = project($pr_name);
@@ -151,13 +151,12 @@
         }
     }
 
-    // return [first word of a string]
-    function first_word($os) {
-        $os = trim($os);
-        $i = strpos($os, ' ');
-        if(!$i)
-            return $o;
-        return substr($o, 0, $i);
+    // return [operative system]
+    function get_os($os) {
+        if(str_contains($stringa, "Windows")) return "Windows";
+        if(str_contains($stringa, "Linux")) return "Linux";
+        if(str_contains($stringa, "MacOS")) return "MacOS";
+        return "";
     }
 
     // return [id_activity]
@@ -479,7 +478,7 @@
         $conn = db();
         $activities = array();
         $end = date('Y-m-d');
-        $start = date('Y-m-d', strtotime('-30 days'));
+        $start = date('Y-m-d', strtotime('-6 days'));
 
         $all_activities = array();
         $current_date = strtotime($start);
