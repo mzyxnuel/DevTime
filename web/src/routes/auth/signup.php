@@ -1,9 +1,9 @@
 <?php
    include("../../../../.php");
-   include(import() . "/web/src/net/xml.php");
-   include(import() . "/web/src/func.php");
+   include(import("/web/src/net/xml.php"));
+   include(import("/web/src/func.php"));
 
-   $content = req(import() . "/web/src/net/xsd/signup.xsd");
+   $content = req(import("/web/src/net/xsd/signup.xsd"));
    $xml = new SimpleXMLElement('<response/>');
 
    if(!$content){

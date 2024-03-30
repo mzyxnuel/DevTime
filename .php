@@ -1,1 +1,1 @@
-<?php function import() { return __DIR__; }
+<?php function import($path) { return __DIR__ . $path; }

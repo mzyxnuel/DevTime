@@ -242,7 +242,7 @@
     // return [ ]
     function activity_languages($id_activity, $modify_rows_ext){
         try{
-            $conn = db(); //TODO controlla l'estensione se è presente in ext, altrimenti ignora il file, (magari anche il numero di righe)
+            $conn = db();
             foreach ($modify_rows_ext as $ext => $modify_rows) {
                 if($modify_rows != 0){
                     $query = $conn->prepare("INSERT INTO activities_languages VALUES (:id_activity, :ext, :modify_rows)");
@@ -385,7 +385,11 @@
 
     // return [incremental percentage]
     function incremental_percentage($api_key, $id_project){
-        return round(today_modify_rows($api_key, $id_project) * 100 / avarage_modify_rows($api_key, $id_project), 1);
+        $avg_modify_rows = avarage_modify_rows($api_key, $id_project);
+        if($avg_modify_rows > 0)
+            return round(today_modify_rows($api_key, $id_project) * 100 / avarage_modify_rows($api_key, $id_project), 1);
+        else
+            return 0;
     }
 
     // return [percentage per languages - associative array]
@@ -511,6 +515,20 @@
             return $activities;
         } catch (Exception $e) {
             die("get_activities: " . $e->getMessage());
+        }
+    }
+
+    // return [user name associated with api key]
+    function get_user_name($api_key){
+        $conn = db();
+        try {
+            $query = $conn->prepare("SELECT name FROM users WHERE api_key = :api_key");
+            $query->bindParam(':api_key', $api_key);
+            $query->execute();
+            $result = $query->fetch(PDO::FETCH_ASSOC);
+            return $result ? $result['name'] : null;
+        } catch(PDOException $e) {
+            die("get_user_name: " . $e->getMessage());
         }
     }
 
