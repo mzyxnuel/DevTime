@@ -7,8 +7,6 @@
 
 package timecode.model.responses;
 
-import java.math.BigInteger;
-
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
@@ -27,7 +25,6 @@ import jakarta.xml.bind.annotation.XmlType;
  *     <restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       <sequence>
  *         <element name="state" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         <element name="id_user" type="{http://www.w3.org/2001/XMLSchema}integer"/>
  *       </sequence>
  *     </restriction>
  *   </complexContent>
@@ -38,24 +35,13 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "state",
-    "idUser"
+    "state"
 })
 @XmlRootElement(name = "response")
-public class ResAuth {
+public class ResponseState {
 
     @XmlElement(required = true)
     protected String state;
-    @XmlElement(name = "id_user", required = false)
-    protected BigInteger idUser;
-
-    public ResAuth() {
-    }
-
-    public ResAuth(String state, BigInteger idUser) {
-        this.state = state;
-        this.idUser = idUser;
-    }
 
     /**
      * Gets the value of the state property.
@@ -79,30 +65,6 @@ public class ResAuth {
      */
     public void setState(String value) {
         this.state = value;
-    }
-
-    /**
-     * Gets the value of the idUser property.
-     *
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *
-     */
-    public BigInteger getIdUser() {
-        return idUser;
-    }
-
-    /**
-     * Sets the value of the idUser property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *
-     */
-    public void setIdUser(BigInteger value) {
-        this.idUser = value;
     }
 
 }
