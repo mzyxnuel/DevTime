@@ -49,7 +49,8 @@ CREATE TABLE users_projects(
    id_project INT UNSIGNED ZEROFILL NOT NULL,
    CONSTRAINT pk_user_project PRIMARY KEY(api_key, id_project),
    CONSTRAINT fk_user_project FOREIGN KEY(api_key)
-   REFERENCES users(api_key),
+   REFERENCES users(api_key)
+   ON DELETE CASCADE ON UPDATE CASCADE,
    CONSTRAINT fk_project_user FOREIGN KEY(id_project)
    REFERENCES projects(id_project)
    ON DELETE CASCADE ON UPDATE CASCADE

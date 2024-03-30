@@ -19,7 +19,7 @@
          $os = $content->os;
          $files_container = $content->files_container;
 
-         echo insert($api_key, $start_time, $end_time, $project_name, $os, $files_container);
+         insert($api_key, $start_time, $end_time, $project_name, $os, $files_container);
 
          $xml->addChild('state', 'success/activity');
       }

@@ -225,12 +225,14 @@
         try {
             $conn = db();
             foreach ($modify_rows_ext as $ext => $modify_rows) {
-                $query = $conn->prepare("INSERT INTO projects_languages VALUES (:id_project, :ext, :modify_rows)
+                if (check_extension($ext)) {
+                    $query = $conn->prepare("INSERT INTO projects_languages VALUES (:id_project, :ext, :modify_rows)
                                          ON DUPLICATE KEY UPDATE num_rows = num_rows + :modify_rows");
-                $query->bindParam(':id_project', $id_project);
-                $query->bindParam(':ext', $ext);
-                $query->bindParam(':modify_rows', $modify_rows);
-                $query->execute();
+                    $query->bindParam(':id_project', $id_project);
+                    $query->bindParam(':ext', $ext);
+                    $query->bindParam(':modify_rows', $modify_rows);
+                    $query->execute();
+                }
             }
             $query = $conn->prepare("DELETE FROM projects_languages WHERE num_rows = 0");
             $query->execute();
@@ -245,16 +247,28 @@
             $conn = db();
             foreach ($modify_rows_ext as $ext => $modify_rows) {
                 if($modify_rows != 0){
-                    $query = $conn->prepare("INSERT INTO activities_languages VALUES (:id_activity, :ext, :modify_rows)");
-                    $query->bindParam(':id_activity', $id_activity);
-                    $query->bindParam(':ext', $ext);
-                    $query->bindParam(':modify_rows', $modify_rows);
-                    $query->execute();
+                    if (check_extension($ext)) {
+                        $query = $conn->prepare("INSERT INTO activities_languages VALUES (:id_activity, :ext, :modify_rows)");
+                        $query->bindParam(':id_activity', $id_activity);
+                        $query->bindParam(':ext', $ext);
+                        $query->bindParam(':modify_rows', $modify_rows);
+                        $query->execute();
+                    }
                 }
             }
         }catch(Exception $e){
             die("activity_languages " . $e->getMessage());
         }
+    }
+
+    function check_extension($ext) {
+        $conn = db();
+        $query = $conn->prepare("SELECT ext FROM languages WHERE ext = :ext");
+        $query->bindParam(':ext', $ext);
+        $query->execute();
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+
+        return $result['ext'];
     }
 
     // return [true: api key is correct - false: api key isnt correct]
