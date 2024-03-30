@@ -12,53 +12,53 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="748.0" prefWidth="1124.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="timecode.control.DashboardController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="971.0" prefWidth="1439.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="timecode.control.DashboardController">
    <children>
-      <ImageView fitHeight="306.0" fitWidth="540.0" layoutX="1.0" layoutY="428.0" pickOnBounds="true" preserveRatio="true" x="14.0">
+      <ImageView fitHeight="384.0" fitWidth="675.0" layoutX="11.0" layoutY="562.0" pickOnBounds="true" preserveRatio="true" x="14.0">
          <image>
             <Image url="@../images/content.png" />
          </image>
       </ImageView>
-      <Pane fx:id="productivity" layoutX="167.0" layoutY="478.0" prefHeight="236.0" prefWidth="236.0" />
-      <ImageView fitHeight="79.0" fitWidth="540.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true" x="14.0" y="12.0">
+      <Pane fx:id="productivity" layoutX="199.0" layoutY="631.0" prefHeight="306.0" prefWidth="305.0" />
+      <ImageView fitHeight="99.0" fitWidth="676.0" layoutX="12.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" x="14.0" y="12.0">
          <image>
             <Image url="@../images/header.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="79.0" fitWidth="540.0" layoutX="556.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true" x="14.0" y="12.0">
+      <ImageView fitHeight="100.0" fitWidth="681.0" layoutX="722.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" x="14.0" y="12.0">
          <image>
             <Image url="@../images/header.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="306.0" fitWidth="540.0" layoutX="15.0" layoutY="111.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="383.0" fitWidth="674.0" layoutX="25.0" layoutY="160.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/content.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="306.0" fitWidth="540.0" layoutX="571.0" layoutY="111.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="383.0" fitWidth="673.0" layoutX="739.0" layoutY="160.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/content.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="306.0" fitWidth="540.0" layoutX="571.0" layoutY="428.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="384.0" fitWidth="675.0" layoutX="737.0" layoutY="564.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/content.png" />
          </image>
       </ImageView>
-      <Text layoutX="672.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select a project:">
+      <Text layoutX="793.0" layoutY="89.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select a project:">
          <font>
-            <Font size="24.0" />
+            <Font size="36.0" />
          </font>
       </Text>
-      <ComboBox fx:id="selector" layoutX="877.0" layoutY="38.0" prefWidth="150.0" promptText="All" />
-      <Text fx:id="header" fill="WHITE" layoutX="45.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0">
+      <ComboBox fx:id="selector" layoutX="1105.0" layoutY="51.0" prefHeight="53.0" prefWidth="244.0" promptText="All" visibleRowCount="5" />
+      <Text fx:id="header" fill="WHITE" layoutX="46.0" layoutY="89.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="630.3333358764648">
          <font>
-            <Font size="24.0" />
+            <Font size="36.0" />
          </font>
       </Text>
-      <PieChart fx:id="languages" layoutX="686.0" layoutY="124.0" prefHeight="280.0" prefWidth="309.0" />
-      <PieChart fx:id="oss" layoutX="685.0" layoutY="441.0" prefHeight="280.0" prefWidth="309.0" />
-      <AreaChart fx:id="timechart" layoutX="15.0" layoutY="127.0" prefHeight="272.0" prefWidth="529.0">
+      <PieChart fx:id="languages" layoutX="871.0" layoutY="167.0" prefHeight="368.0" prefWidth="406.0" />
+      <PieChart fx:id="oss" layoutX="872.0" layoutY="582.0" prefHeight="354.0" prefWidth="388.0" />
+      <AreaChart fx:id="timechart" layoutX="33.0" layoutY="190.0" prefHeight="333.0" prefWidth="649.0">
         <xAxis>
           <CategoryAxis side="BOTTOM" />
         </xAxis>
@@ -66,9 +66,9 @@
           <NumberAxis side="LEFT" />
         </yAxis>
       </AreaChart>
-      <Text layoutX="240.0" layoutY="468.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Productivity">
+      <Text layoutX="286.0" layoutY="612.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Productivity">
          <font>
-            <Font size="18.0" />
+            <Font size="24.0" />
          </font>
       </Text>
    </children>
