@@ -85,7 +85,7 @@
         $temp = $start;
         $date = date("Y-m-d", $temp = time());
         $time = $end - $start;
-        $id_os = check_os(get_os($os));
+        $id_os = check_os($os);
         $id_project = check_project($pr_name);
         if(!isset($id_project))
             $id_project = project($pr_name);
@@ -138,25 +138,21 @@
     }
 
     // return [id_os: os known - null: os doesnt known]
-    function check_os($name){
+    function check_os($os){
         $conn = db();
         try{
-            $query = $conn->prepare("SELECT id_os FROM oss WHERE name = :name");
-            $query->bindParam(':name', $name);
+            $query = $conn->prepare("SELECT id_os, name FROM oss");
             $query->execute();
-            $result = $query->fetch(PDO::FETCH_ASSOC);
-            return $result ? $result['id_os'] : null;
-        }catch(Exception $e){
-            die("check_os: " . $e->getMessage());
+            $results = $query->fetchAll(PDO::FETCH_ASSOC);
+            foreach($results as $row) {
+                if (str_contains($os, $row['name'])) {
+                    return $row['id_os'];
+                }
+            }
+            return null;
+        } catch(Exception $e){
+            die("get_os_id: " . $e->getMessage());
         }
-    }
-
-    // return [operative system]
-    function get_os($os) {
-        if(str_contains($stringa, "Windows")) return "Windows";
-        if(str_contains($stringa, "Linux")) return "Linux";
-        if(str_contains($stringa, "MacOS")) return "MacOS";
-        return "";
     }
 
     // return [id_activity]
