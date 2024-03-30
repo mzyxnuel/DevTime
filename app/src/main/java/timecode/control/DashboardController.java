@@ -15,7 +15,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.AreaChart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
@@ -112,7 +111,7 @@ public class DashboardController implements Initializable {
 
    private void ui(ActionEvent event) {
       String selectedValue = selector.getValue();
-      // TODO FIX System.out.println("VALORE:" + selectedValue);
+
       if (selectedValue != null) {
          if (!selectedValue.equals("All"))
             make(selectedValue);
@@ -122,11 +121,7 @@ public class DashboardController implements Initializable {
   }
 
    private void initTimeAreaChart(ProjectNamesContainer pnc, DatesContainer datesContainer, String project) {
-      NumberAxis x = new NumberAxis(1, 31, 1);
-      x.setLabel("Day");
-
-      NumberAxis y = new NumberAxis();
-      y.setLabel("Time");
+      timechart.setTitle("Time x Day");
 
       for (int i = 0; i < pnc.getProjectContainer().size(); i++) {
          String projectName = pnc.getProjectContainer().get(i).getProjectName();
