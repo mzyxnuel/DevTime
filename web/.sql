@@ -1,5 +1,7 @@
 CREATE DATABASE timecode;
 
+USE timecode;
+
 CREATE TABLE users(
    api_key CHAR(20) BINARY PRIMARY KEY,
    name VARCHAR(100) NOT NULL,
@@ -12,6 +14,16 @@ CREATE TABLE users(
 CREATE TABLE projects(
    id_project INT UNSIGNED ZEROFILL AUTO_INCREMENT PRIMARY KEY,
    name VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE languages(
+   ext VARCHAR(5) PRIMARY KEY,
+   name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE oss(
+   id_os INT UNSIGNED ZEROFILL AUTO_INCREMENT PRIMARY KEY,
+   name VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE activities(
@@ -32,22 +44,13 @@ CREATE TABLE activities(
    ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE languages(
-   ext VARCHAR(5) PRIMARY KEY,
-   name VARCHAR(100) NOT NULL
-);
-
-CREATE TABLE oss(
-   id_os INT UNSIGNED ZEROFILL AUTO_INCREMENT PRIMARY KEY,
-   name VARCHAR(100) NOT NULL
-);
-
 CREATE TABLE users_projects(
    api_key CHAR(20) BINARY NOT NULL,
    id_project INT UNSIGNED ZEROFILL NOT NULL,
    CONSTRAINT pk_user_project PRIMARY KEY(api_key, id_project),
    CONSTRAINT fk_user_project FOREIGN KEY(api_key)
-   REFERENCES users(api_key),
+   REFERENCES users(api_key)
+   ON DELETE CASCADE ON UPDATE CASCADE,
    CONSTRAINT fk_project_user FOREIGN KEY(id_project)
    REFERENCES projects(id_project)
    ON DELETE CASCADE ON UPDATE CASCADE
@@ -79,154 +82,105 @@ CREATE TABLE activities_languages(
    ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-SELECT ROUND(SUM(ABS(modify_rows)) / (DATEDIFF(CURDATE(), U.date) + 1), 1) AS daily_modify_rows
-FROM activities_languages AS AL
-INNER JOIN activities AS AC USING(id_activity)
-INNER JOIN users AS U USING(api_key)
-WHERE AC.api_key = ''
--- avarage rows modified for each day - user
+INSERT INTO oss VALUES(NULL, 'Windows'), (NULL, 'Linux'), (NULL, 'MacOS');
 
-SELECT ROUND(SUM(ABS(modify_rows)) / (DATEDIFF(CURDATE(), MIN(AC.date)) + 1), 1) AS daily_modify_rows
-FROM activities_languages AS AL
-INNER JOIN activities AS AC USING(id_activity)
-INNER JOIN users AS U USING(api_key)
-WHERE AC.api_key = 'qm8d3RXTkqLiQqa10O3I'
-AND AC.id_project = '2'
--- avarage rows modified for each day - project
-
-SELECT SUM(ABS(modify_rows)) AS today_modify_rows
-FROM activities_languages AS AL
-INNER JOIN activities AS AC USING(id_activity)
-INNER JOIN users AS U USING(api_key)
-WHERE AC.date = CURDATE()
-AND AC.api_key = ''
--- today modify rows - user
-
-SELECT SUM(ABS(modify_rows)) AS today_modify_rows
-FROM activities_languages AS AL
-INNER JOIN activities AS AC USING(id_activity)
-INNER JOIN users AS U USING(api_key)
-WHERE AC.date = CURDATE()
-AND AC.api_key = 'qm8d3RXTkqLiQqa10O3I'
-AND AC.id_project = '2'
--- today modify rows - project
-
-SELECT L.name, ROUND(PL.num_rows / T.total_rows * 100, 1) AS percentage
-FROM projects_languages AS PL
-INNER JOIN projects AS PR USING(id_project)
-INNER JOIN users_projects AS UP USING(id_project)
-INNER JOIN languages AS L USING(ext)
-INNER JOIN(
-   SELECT UP.api_key, SUM(num_rows) AS total_rows
-   FROM projects_languages AS PL
-   INNER JOIN projects AS PR USING(id_project)
-   INNER JOIN users_projects AS UP USING(id_project)
-   GROUP BY UP.api_key
-) AS T USING(api_key)
-WHERE UP.api_key = ''
--- percentage languages - user
-
-SELECT L.name, ROUND(PL.num_rows / T.total_rows * 100, 1) AS percentage
-FROM projects_languages AS PL
-INNER JOIN projects AS PR USING(id_project)
-INNER JOIN users_projects AS UP USING(id_project)
-INNER JOIN languages AS L USING (ext)
-INNER JOIN (
-   SELECT id_project, SUM(num_rows) AS total_rows
-   FROM projects_languages AS PL
-   GROUP BY id_project
-) AS T USING (id_project)
-WHERE PL.id_project = ''
-AND UP.api_key = ''
--- percentage languages - project
-
-SELECT O.name, ROUND(COUNT(*) * 100 / T.count, 1) AS percentage
-FROM activities AS AC
-INNER JOIN oss AS O USING(id_os)
-INNER JOIN(
-   SELECT api_key, COUNT(*) AS count
-   FROM activities
-   GROUP BY api_key
-) AS T USING(api_key)
-WHERE AC.api_key = ''
-GROUP BY O.name
--- percentage operative system - user
-
-SELECT O.name, ROUND(COUNT(*) * 100 / T.count, 1) AS percentage
-FROM activities AS AC
-INNER JOIN oss AS O USING(id_os)
-INNER JOIN(
-   SELECT api_key, COUNT(*) AS count
-   FROM activities
-   WHERE id_project = ''
-   GROUP BY api_key
-) AS T USING(api_key)
-WHERE AC.api_key = ''
-AND id_project = ''
-GROUP BY O.name
--- percentage operative system - project
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-SELECT L.name, ROUND(PL.num_rows / T.total_rows * 100, 1) AS percentage
-FROM projects_languages AS PL
-INNER JOIN projects AS PR USING(id_project)
-INNER JOIN users_projects AS UR USING(id_project)
-INNER JOIN languages AS L USING (ext)
-INNER JOIN (
-   SELECT id_project, SUM(num_rows) AS total_rows
-   FROM projects_languages
-   GROUP BY id_project
-) AS T USING (id_project)
-WHERE UR.api_key = 'BDJeOYMUYA1LB0UCV2So'
--- percentage languages user
-
-SELECT OS.name, ROUND(COUNT(*) / T.total_activities * 100, 1) AS percentage
-FROM activities AS AC
-INNER JOIN oss AS OS USING(id_os)
-INNER JOIN (
-   SELECT api_key, COUNT(*) AS total_activities
-   FROM activities
-   GROUP BY api_key
-) AS T ON AC.api_key = T.api_key
-WHERE AC.api_key = 'BDJeOYMUYA1LB0UCV2So'
-GROUP BY OS.name;
--- percentage operative systems user
-
-SELECT OS.name, ROUND(COUNT(*) / T.total_activities * 100, 1) AS percentage
-FROM activities AS AC
-INNER JOIN oss AS OS USING(id_os)
-INNER JOIN (
-   SELECT api_key, COUNT(*) AS total_activities
-   FROM activities
-   WHERE id_project = '1'
-   GROUP BY api_key
-) AS T ON AC.api_key = T.api_key
-WHERE AC.api_key = 'BDJeOYMUYA1LB0UCV2So'
-GROUP BY OS.name;
--- percentage operative systems project NON VA
+INSERT INTO `languages` (`ext`, `name`) VALUES
+('ai', 'Adobe Illustrator File'),
+('asm', 'Assembly Language Source File'),
+('asp', 'Active Server Pages'),
+('aspx', 'ASP.NET Page'),
+('bash', 'Bash Script'),
+('bat', 'Batch File'),
+('bmp', 'Bitmap Image'),
+('c', 'C'),
+('cfg', 'Configuration File'),
+('cgi', 'CGI Script'),
+('class', 'Java Class File'),
+('cmd', 'Windows Command Script'),
+('conf', 'Configuration File'),
+('confi', 'Configuration File'),
+('cpp', 'C++'),
+('cs', 'C#'),
+('cspro', 'C# Project File'),
+('css', 'CSS'),
+('csv', 'CSV Data'),
+('dll', 'Dynamic Link Library'),
+('doc', 'Microsoft Word Document'),
+('docx', 'Microsoft Word Open XML Document'),
+('ear', 'Java Enterprise Archive'),
+('env', 'Environment File'),
+('exe', 'Executable File'),
+('fxml', 'FXML'),
+('gif', 'GIF Image'),
+('go', 'Go Source File'),
+('hs', 'Haskell Source File'),
+('htacc', 'Apache .htaccess File'),
+('html', 'HTML'),
+('htpas', 'Apache .htpasswd File'),
+('ico', 'Icon File'),
+('ini', 'Configuration File'),
+('jar', 'Java Archive'),
+('java', 'Java'),
+('jpeg', 'JPEG Image'),
+('jpg', 'JPEG Image'),
+('js', 'JavaScript'),
+('json', 'JSON Data'),
+('jsp', 'JavaServer Pages'),
+('jsx', 'JSX File'),
+('kt', 'Kotlin Source File'),
+('less', 'Less Stylesheet'),
+('licen', 'License File'),
+('log', 'Log File'),
+('lua', 'Lua Script'),
+('makef', 'Makefile'),
+('md', 'Markdown Document'),
+('mp3', 'MP3 Audio'),
+('mp4', 'MP4 Video'),
+('odp', 'OpenDocument Presentation'),
+('ods', 'OpenDocument Spreadsheet'),
+('odt', 'OpenDocument Text Document'),
+('pdf', 'PDF Document'),
+('php', 'PHP'),
+('pl', 'Perl Script'),
+('png', 'PNG Image'),
+('ppt', 'Microsoft PowerPoint Presentation'),
+('pptx', 'Microsoft PowerPoint Open XML Presentation'),
+('proj', 'Generic Project File'),
+('prope', 'Properties File'),
+('ps1', 'PowerShell Script'),
+('psd', 'Adobe Photoshop Document'),
+('py', 'Python'),
+('rar', 'RAR Archive'),
+('rb', 'Ruby Source File'),
+('readm', 'Readme File'),
+('rs', 'Rust'),
+('rst', 'reStructuredText Document'),
+('rtf', 'Rich Text Format'),
+('scala', 'Scala Source File'),
+('scss', 'Sass Stylesheet'),
+('setti', 'Settings File'),
+('sh', 'Shell Script'),
+('sln', 'Visual Studio Solution File'),
+('sql', 'SQL'),
+('svg', 'Scalable Vector Graphics'),
+('tiff', 'TIFF Image'),
+('tpl', 'Template File'),
+('ts', 'TypeScript File'),
+('tsv', 'Tab-Separated Values File'),
+('tsx', 'React TypeScript File'),
+('twig', 'Twig Template'),
+('txt', 'Text Document'),
+('vb', 'Visual Basic Source File'),
+('vbpro', 'Visual Basic Project File'),
+('vbs', 'VBScript File'),
+('vcxpr', 'Visual C++ Project File'),
+('vue', 'Vue.js Component'),
+('war', 'Java Web Archive'),
+('xls', 'Microsoft Excel Spreadsheet'),
+('xlsm', 'Microsoft Excel Macro-Enabled Workbook'),
+('xlsx', 'Microsoft Excel Open XML Spreadsheet'),
+('xml', 'XML Document'),
+('xsd', 'XML Schema Definition'),
+('yaml', 'YAML Document'),
+('yml', 'YAML Document'),
+('zip', 'ZIP Archive');

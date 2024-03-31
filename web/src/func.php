@@ -85,7 +85,7 @@
         $temp = $start;
         $date = date("Y-m-d", $temp = time());
         $time = $end - $start;
-        $id_os = check_os(first_word($os));
+        $id_os = check_os($os);
         $id_project = check_project($pr_name);
         if(!isset($id_project))
             $id_project = project($pr_name);
@@ -138,26 +138,21 @@
     }
 
     // return [id_os: os known - null: os doesnt known]
-    function check_os($name){
+    function check_os($os){
         $conn = db();
         try{
-            $query = $conn->prepare("SELECT id_os FROM oss WHERE name = :name");
-            $query->bindParam(':name', $name);
+            $query = $conn->prepare("SELECT id_os, name FROM oss");
             $query->execute();
-            $result = $query->fetch(PDO::FETCH_ASSOC);
-            return $result ? $result['id_os'] : null;
-        }catch(Exception $e){
-            die("check_os: " . $e->getMessage());
+            $results = $query->fetchAll(PDO::FETCH_ASSOC);
+            foreach($results as $row) {
+                if (str_contains($os, $row['name'])) {
+                    return $row['id_os'];
+                }
+            }
+            return null;
+        } catch(Exception $e){
+            die("get_os_id: " . $e->getMessage());
         }
-    }
-
-    // return [first word of a string]
-    function first_word($os) {
-        $os = trim($os);
-        $i = strpos($os, ' ');
-        if(!$i)
-            return $o;
-        return substr($o, 0, $i);
     }
 
     // return [id_activity]
@@ -230,12 +225,14 @@
         try {
             $conn = db();
             foreach ($modify_rows_ext as $ext => $modify_rows) {
-                $query = $conn->prepare("INSERT INTO projects_languages VALUES (:id_project, :ext, :modify_rows)
+                if (check_extension($ext)) {
+                    $query = $conn->prepare("INSERT INTO projects_languages VALUES (:id_project, :ext, :modify_rows)
                                          ON DUPLICATE KEY UPDATE num_rows = num_rows + :modify_rows");
-                $query->bindParam(':id_project', $id_project);
-                $query->bindParam(':ext', $ext);
-                $query->bindParam(':modify_rows', $modify_rows);
-                $query->execute();
+                    $query->bindParam(':id_project', $id_project);
+                    $query->bindParam(':ext', $ext);
+                    $query->bindParam(':modify_rows', $modify_rows);
+                    $query->execute();
+                }
             }
             $query = $conn->prepare("DELETE FROM projects_languages WHERE num_rows = 0");
             $query->execute();
@@ -247,19 +244,31 @@
     // return [ ]
     function activity_languages($id_activity, $modify_rows_ext){
         try{
-            $conn = db(); //TODO controlla l'estensione se è presente in ext, altrimenti ignora il file, (magari anche il numero di righe)
+            $conn = db();
             foreach ($modify_rows_ext as $ext => $modify_rows) {
                 if($modify_rows != 0){
-                    $query = $conn->prepare("INSERT INTO activities_languages VALUES (:id_activity, :ext, :modify_rows)");
-                    $query->bindParam(':id_activity', $id_activity);
-                    $query->bindParam(':ext', $ext);
-                    $query->bindParam(':modify_rows', $modify_rows);
-                    $query->execute();
+                    if (check_extension($ext)) {
+                        $query = $conn->prepare("INSERT INTO activities_languages VALUES (:id_activity, :ext, :modify_rows)");
+                        $query->bindParam(':id_activity', $id_activity);
+                        $query->bindParam(':ext', $ext);
+                        $query->bindParam(':modify_rows', $modify_rows);
+                        $query->execute();
+                    }
                 }
             }
         }catch(Exception $e){
             die("activity_languages " . $e->getMessage());
         }
+    }
+
+    function check_extension($ext) {
+        $conn = db();
+        $query = $conn->prepare("SELECT ext FROM languages WHERE ext = :ext");
+        $query->bindParam(':ext', $ext);
+        $query->execute();
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+
+        return $result['ext'];
     }
 
     // return [true: api key is correct - false: api key isnt correct]
@@ -390,7 +399,11 @@
 
     // return [incremental percentage]
     function incremental_percentage($api_key, $id_project){
-        return round(today_modify_rows($api_key, $id_project) * 100 / avarage_modify_rows($api_key, $id_project), 1);
+        $avg_modify_rows = avarage_modify_rows($api_key, $id_project);
+        if($avg_modify_rows > 0)
+            return round(today_modify_rows($api_key, $id_project) * 100 / avarage_modify_rows($api_key, $id_project), 1);
+        else
+            return 100;
     }
 
     // return [percentage per languages - associative array]
@@ -483,7 +496,7 @@
         $conn = db();
         $activities = array();
         $end = date('Y-m-d');
-        $start = date('Y-m-d', strtotime('-30 days'));
+        $start = date('Y-m-d', strtotime('-6 days'));
 
         $all_activities = array();
         $current_date = strtotime($start);
@@ -520,6 +533,20 @@
             return $activities;
         } catch (Exception $e) {
             die("get_activities: " . $e->getMessage());
+        }
+    }
+
+    // return [user name associated with api key]
+    function get_user_name($api_key){
+        $conn = db();
+        try {
+            $query = $conn->prepare("SELECT name FROM users WHERE api_key = :api_key");
+            $query->bindParam(':api_key', $api_key);
+            $query->execute();
+            $result = $query->fetch(PDO::FETCH_ASSOC);
+            return $result ? $result['name'] : null;
+        } catch(PDOException $e) {
+            die("get_user_name: " . $e->getMessage());
         }
     }
 
