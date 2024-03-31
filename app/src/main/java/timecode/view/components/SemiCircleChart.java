@@ -19,7 +19,7 @@ public class SemiCircleChart extends Parent {
       double innerHoleRadius = 120; // radius of the inner hole in the chart
       double totalValues = 0;
       double totalAngle = 180;
-      String text = percentage + "% ";
+      String text = String.format("%.1f", percentage) + "% ";
 
       dataList.add(new Data(percentage));
 
