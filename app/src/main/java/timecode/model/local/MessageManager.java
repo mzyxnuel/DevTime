@@ -12,7 +12,6 @@ public class MessageManager {
 
    public MessageManager(String code) {
       String status = code.substring(0, code.indexOf("/"));
-      String type = code.substring(code.indexOf("/") + 1);
 
       switch (status) {
          case "success":
@@ -24,20 +23,18 @@ public class MessageManager {
          break;
       }
 
-      //TODO  xml connection system env
-
-      switch (type) {
-         case "login":
-            text = "Login successfull";
+      switch (code) {
+         case "erro/xml":
+            text = "XML parsing error";
             break;
-         case "connection":
+         case "error/connection":
             text = "Connection error";
             break;
-         case "parsing":
-            text = "Parsing error";
+         case "error/env":
+            text = "Missing Enviroment";
             break;
-         case "password-too-short":
-            text = "Password too weak, at least 8 characters";
+         case "system/env":
+            text = "System error";
             break;
 
          default:
