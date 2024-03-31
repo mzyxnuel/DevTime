@@ -141,4 +141,4 @@ INSERT INTO `languages` (`ext`, `name`) VALUES
 ('xls', 'Excel'),
 ('xml', 'XML'),
 ('xsd', 'XML Schema'),
-('yaml', 'YAML'),
+('yaml', 'YAML');
