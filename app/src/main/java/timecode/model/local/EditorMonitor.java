@@ -14,6 +14,7 @@ import timecode.model.requests.Activity;
 import timecode.model.requests.Activity.FilesContainer;
 import timecode.model.requests.Activity.FilesContainer.FileContainer;
 import timecode.model.responses.ResponseState;
+import timecode.view.App;
 
 public class EditorMonitor implements Runnable {
    private long startTime;
@@ -58,6 +59,8 @@ public class EditorMonitor implements Runnable {
 
             if (response != null) {
                ResponseState res = (ResponseState) new JAXB(ResponseState.class).unmarshal(response.body()); // unmarshal the response
+               System.out.println("[" + Thread.currentThread().getName() + "]: activity saved");
+               App.setScene("/ui/dashboard");
                new MessageManager(res.getState());
             }
 
