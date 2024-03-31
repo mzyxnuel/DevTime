@@ -403,7 +403,7 @@
         if($avg_modify_rows > 0)
             return round(today_modify_rows($api_key, $id_project) * 100 / avarage_modify_rows($api_key, $id_project), 1);
         else
-            return 0;
+            return 100;
     }
 
     // return [percentage per languages - associative array]
