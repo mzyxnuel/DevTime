@@ -1,5 +1,7 @@
 CREATE DATABASE timecode;
 
+USE timecode;
+
 CREATE TABLE users(
    api_key CHAR(20) BINARY PRIMARY KEY,
    name VARCHAR(100) NOT NULL,
@@ -12,6 +14,16 @@ CREATE TABLE users(
 CREATE TABLE projects(
    id_project INT UNSIGNED ZEROFILL AUTO_INCREMENT PRIMARY KEY,
    name VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE languages(
+   ext VARCHAR(5) PRIMARY KEY,
+   name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE oss(
+   id_os INT UNSIGNED ZEROFILL AUTO_INCREMENT PRIMARY KEY,
+   name VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE activities(
@@ -32,22 +44,13 @@ CREATE TABLE activities(
    ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE languages(
-   ext VARCHAR(5) PRIMARY KEY,
-   name VARCHAR(100) NOT NULL
-);
-
-CREATE TABLE oss(
-   id_os INT UNSIGNED ZEROFILL AUTO_INCREMENT PRIMARY KEY,
-   name VARCHAR(100) NOT NULL
-);
-
 CREATE TABLE users_projects(
    api_key CHAR(20) BINARY NOT NULL,
    id_project INT UNSIGNED ZEROFILL NOT NULL,
    CONSTRAINT pk_user_project PRIMARY KEY(api_key, id_project),
    CONSTRAINT fk_user_project FOREIGN KEY(api_key)
-   REFERENCES users(api_key),
+   REFERENCES users(api_key)
+   ON DELETE CASCADE ON UPDATE CASCADE,
    CONSTRAINT fk_project_user FOREIGN KEY(id_project)
    REFERENCES projects(id_project)
    ON DELETE CASCADE ON UPDATE CASCADE
@@ -79,154 +82,63 @@ CREATE TABLE activities_languages(
    ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-SELECT ROUND(SUM(ABS(modify_rows)) / (DATEDIFF(CURDATE(), U.date) + 1), 1) AS daily_modify_rows
-FROM activities_languages AS AL
-INNER JOIN activities AS AC USING(id_activity)
-INNER JOIN users AS U USING(api_key)
-WHERE AC.api_key = ''
--- avarage rows modified for each day - user
+INSERT INTO oss VALUES(NULL, 'Windows'), (NULL, 'Linux'), (NULL, 'MacOS');
 
-SELECT ROUND(SUM(ABS(modify_rows)) / (DATEDIFF(CURDATE(), MIN(AC.date)) + 1), 1) AS daily_modify_rows
-FROM activities_languages AS AL
-INNER JOIN activities AS AC USING(id_activity)
-INNER JOIN users AS U USING(api_key)
-WHERE AC.api_key = 'qm8d3RXTkqLiQqa10O3I'
-AND AC.id_project = '2'
--- avarage rows modified for each day - project
-
-SELECT SUM(ABS(modify_rows)) AS today_modify_rows
-FROM activities_languages AS AL
-INNER JOIN activities AS AC USING(id_activity)
-INNER JOIN users AS U USING(api_key)
-WHERE AC.date = CURDATE()
-AND AC.api_key = ''
--- today modify rows - user
-
-SELECT SUM(ABS(modify_rows)) AS today_modify_rows
-FROM activities_languages AS AL
-INNER JOIN activities AS AC USING(id_activity)
-INNER JOIN users AS U USING(api_key)
-WHERE AC.date = CURDATE()
-AND AC.api_key = 'qm8d3RXTkqLiQqa10O3I'
-AND AC.id_project = '2'
--- today modify rows - project
-
-SELECT L.name, ROUND(PL.num_rows / T.total_rows * 100, 1) AS percentage
-FROM projects_languages AS PL
-INNER JOIN projects AS PR USING(id_project)
-INNER JOIN users_projects AS UP USING(id_project)
-INNER JOIN languages AS L USING(ext)
-INNER JOIN(
-   SELECT UP.api_key, SUM(num_rows) AS total_rows
-   FROM projects_languages AS PL
-   INNER JOIN projects AS PR USING(id_project)
-   INNER JOIN users_projects AS UP USING(id_project)
-   GROUP BY UP.api_key
-) AS T USING(api_key)
-WHERE UP.api_key = ''
--- percentage languages - user
-
-SELECT L.name, ROUND(PL.num_rows / T.total_rows * 100, 1) AS percentage
-FROM projects_languages AS PL
-INNER JOIN projects AS PR USING(id_project)
-INNER JOIN users_projects AS UP USING(id_project)
-INNER JOIN languages AS L USING (ext)
-INNER JOIN (
-   SELECT id_project, SUM(num_rows) AS total_rows
-   FROM projects_languages AS PL
-   GROUP BY id_project
-) AS T USING (id_project)
-WHERE PL.id_project = ''
-AND UP.api_key = ''
--- percentage languages - project
-
-SELECT O.name, ROUND(COUNT(*) * 100 / T.count, 1) AS percentage
-FROM activities AS AC
-INNER JOIN oss AS O USING(id_os)
-INNER JOIN(
-   SELECT api_key, COUNT(*) AS count
-   FROM activities
-   GROUP BY api_key
-) AS T USING(api_key)
-WHERE AC.api_key = ''
-GROUP BY O.name
--- percentage operative system - user
-
-SELECT O.name, ROUND(COUNT(*) * 100 / T.count, 1) AS percentage
-FROM activities AS AC
-INNER JOIN oss AS O USING(id_os)
-INNER JOIN(
-   SELECT api_key, COUNT(*) AS count
-   FROM activities
-   WHERE id_project = ''
-   GROUP BY api_key
-) AS T USING(api_key)
-WHERE AC.api_key = ''
-AND id_project = ''
-GROUP BY O.name
--- percentage operative system - project
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-SELECT L.name, ROUND(PL.num_rows / T.total_rows * 100, 1) AS percentage
-FROM projects_languages AS PL
-INNER JOIN projects AS PR USING(id_project)
-INNER JOIN users_projects AS UR USING(id_project)
-INNER JOIN languages AS L USING (ext)
-INNER JOIN (
-   SELECT id_project, SUM(num_rows) AS total_rows
-   FROM projects_languages
-   GROUP BY id_project
-) AS T USING (id_project)
-WHERE UR.api_key = 'BDJeOYMUYA1LB0UCV2So'
--- percentage languages user
-
-SELECT OS.name, ROUND(COUNT(*) / T.total_activities * 100, 1) AS percentage
-FROM activities AS AC
-INNER JOIN oss AS OS USING(id_os)
-INNER JOIN (
-   SELECT api_key, COUNT(*) AS total_activities
-   FROM activities
-   GROUP BY api_key
-) AS T ON AC.api_key = T.api_key
-WHERE AC.api_key = 'BDJeOYMUYA1LB0UCV2So'
-GROUP BY OS.name;
--- percentage operative systems user
-
-SELECT OS.name, ROUND(COUNT(*) / T.total_activities * 100, 1) AS percentage
-FROM activities AS AC
-INNER JOIN oss AS OS USING(id_os)
-INNER JOIN (
-   SELECT api_key, COUNT(*) AS total_activities
-   FROM activities
-   WHERE id_project = '1'
-   GROUP BY api_key
-) AS T ON AC.api_key = T.api_key
-WHERE AC.api_key = 'BDJeOYMUYA1LB0UCV2So'
-GROUP BY OS.name;
--- percentage operative systems project NON VA
+INSERT INTO `languages` (`ext`, `name`) VALUES
+('asm', 'Assembly'),
+('asp', 'Active Server Pages'),
+('aspx', 'ASP.NET Page'),
+('bash', 'Bash Script'),
+('bat', 'Batch File'),
+('c', 'C'),
+('cfg', 'Configuration File'),
+('cgi', 'CGI Script'),
+('cmd', 'Windows Command Script'),
+('conf', 'Configuration File'),
+('confi', 'Configuration File'),
+('cpp', 'C++'),
+('cs', 'C#'),
+('cspro', 'C# Project File'),
+('css', 'CSS'),
+('csv', 'CSV Data'),
+('dll', 'Dynamic Link Library'),
+('env', 'Environment File'),
+('fxml', 'FXML'),
+('go', 'Go'),
+('hs', 'Haskell'),
+('htaccess', 'Apache .htaccess File'),
+('html', 'HTML'),
+('htpas', 'Apache .htpasswd File'),
+('ini', 'Configuration File'),
+('java', 'Java'),
+('js', 'JavaScript'),
+('json', 'JSON'),
+('jsp', 'JavaServer Pages'),
+('jsx', 'Javascript React'),
+('kt', 'Kotlin'),
+('less', 'Less'),
+('log', 'Log File'),
+('lua', 'Lua'),
+('makef', 'Makefile'),
+('md', 'Markdown'),
+('php', 'PHP'),
+('pl', 'Perl'),
+('ps1', 'PowerShell'),
+('py', 'Python'),
+('rb', 'Ruby'),
+('rs', 'Rust'),
+('scala', 'Scala'),
+('scss', 'Sass'),
+('sh', 'Shell Script'),
+('sql', 'SQL'),
+('ts', 'TypeScript'),
+('tsx', 'TypeScript React'),
+('twig', 'Twig Template'),
+('txt', 'Plain Text'),
+('vb', 'Visual Basic'),
+('vbs', 'VBScript'),
+('vue', 'Vue.js'),
+('xls', 'Excel'),
+('xml', 'XML'),
+('xsd', 'XML Schema'),
+('yaml', 'YAML');

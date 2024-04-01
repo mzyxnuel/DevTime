@@ -13,13 +13,20 @@ import javafx.scene.text.Text;
 public class SemiCircleChart extends Parent {
    public SemiCircleChart(double percentage, boolean increase) {
       List<SemiCircleChart.Data> dataList = new ArrayList<>();
-      double centerX = 120; // coordinates for the center of the chart
-      double centerY = 210;
+      double centerX = 150; // coordinates for the center of the chart
+      double centerY = 230;
       double radius = 180; // radius of the chart
       double innerHoleRadius = 120; // radius of the inner hole in the chart
       double totalValues = 0;
       double totalAngle = 180;
-      String text = percentage + "% ";
+
+      String text = String.format("%.1f", percentage) + "% ";
+
+      if (percentage >= 100)
+         percentage = 100;
+
+      if (percentage <= 0)
+         percentage = 0;
 
       dataList.add(new Data(percentage));
 

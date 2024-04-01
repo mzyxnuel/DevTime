@@ -1,13 +1,13 @@
 <?php
    include("../../../.php");
-   include(import() . "/web/src/net/xml.php");
-   include(import() . "/web/src/func.php");
+   include(import("/web/src/net/xml.php"));
+   include(import("/web/src/func.php"));
 
    $xml = new SimpleXMLElement('<response/>');
 
    // request method post
    if($_SERVER['REQUEST_METHOD'] == 'POST'){
-      $content = req(import() . "/web/src/net/xsd/activity.xsd");
+      $content = req(import("/web/src/net/xsd/activity.xsd"));
 
       if(!$content){
          $xml->addChild('state', 'error/xml');
@@ -33,7 +33,7 @@
 
       $xml->addChild('state', check_request($api_key, $project));
       if($xml->state == "success/get_info") {
-         $xml->addChild('name', $project ? $project : $api_key);
+         $xml->addChild('name', $project ? $project : get_user_name($api_key));
          $xml->addChild('time', get_time($api_key, $id_project));
          $xml->addChild('incremental_percentage', incremental_percentage($api_key, $id_project));
 
@@ -49,8 +49,8 @@
             $date_node->addChild('date', $date);
             foreach ($date_container as $activity) {
                $project_container = $date_node->addChild('project_container');
+               $project_container->addChild('project_name', $activity['name']);
                $project_container->addChild('time', $activity['time']);
-               $project_container->addChild('name', $activity['name']);
             }
          }
 
