@@ -24,17 +24,45 @@ public class MessageManager {
       }
 
       switch (code) {
-         case "erro/xml":
+         case "error/xml":
             text = "XML parsing error";
             break;
          case "error/connection":
             text = "Connection error";
             break;
          case "error/env":
-            text = "Missing Enviroment";
+            text = "Missing enviroment";
             break;
-         case "system/env":
+         case "error/system":
             text = "System error";
+            break;
+         case "error/login":
+            text = "Login error";
+            break;
+         case "error/signup":
+            text = "Signup error";
+            break;
+         case "error/access_denied":
+            text = "Access denied";
+            break;
+         case "error/invalid_project_name":
+            text = "Invalid name project";
+            break;
+         case "error/invalid_api_key":
+            text = "Invalid API key";
+            break;
+
+         case "success/login":
+            text = "Login success";
+            break;
+         case "success/signup":
+            text = "Signup success";
+            break;
+         case "success/activity":
+            text = "Activity saved";
+            break;
+         case "success/get_info":
+            text = "Get informations";
             break;
 
          default:
