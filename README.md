@@ -3,7 +3,9 @@
 ## Project Description
 TimeCode aims to enhance the efficiency and productivity of software developers by providing detailed analysis of time spent during software development. By offering a comprehensive overview of time spent on specific projects, programming languages used, and activities performed during development sessions, TimeCode provides detailed analysis to help developers better understand their work habits and adopt more efficient practices.
 
-[diagram here]
+<img src="https://i.ibb.co/7NFcHzD/Time-Code-01-04-2024-20-20-32.png" />
+<img src="https://i.ibb.co/RQtjWNP/Time-Code-01-04-2024-20-21-23.png" />
+<img src="https://i.ibb.co/3sSwpZf/Windows-Power-Shell-01-04-2024-20-22-03.png" />
 
 ### Detailed Time Analysis:
 Through the TimeCode interface, developers can view detailed analysis of time spent on specific projects, programming languages used, and activities performed during development sessions. This enables developers to identify areas where they could improve efficiency and optimize time spent on work.
@@ -19,29 +21,24 @@ The system architecture follows the MVC (Model-View-Controller) pattern, where t
 
 ### Key Components:
 - **IDE Monitor:** Monitors IDE for data saving, implements runnable to be used via thread.
-[diagram here]
 - **XML to Java Object Transformation Class:** Transforms XML to Java objects and vice versa.
-[diagram here]
 - **Class for Sending XML Data to API:** Handles sending XML data to the API.
-[diagram here]
 
 ### Interactions between Components:
 - JavaFX uses the @FXML annotation on Java attributes to identify the corresponding graphical component by attribute name.
-[diagram here]
+
+<img src="https://i.ibb.co/PmRPvt7/code.png" />
 
 ### Architecture Diagram:
-[diagram here]
+<img src="https://i.ibb.co/m61F82M/Untitled-Diagram-1.png" />
 
 ## Web Service Description
 The web service is designed to record and, when necessary, send information related to project development to which the user has access. It is developed with a REST architecture, using XML for data exchange (the client sends XML only in case of POST requests). The web service also employs specific XSD for data validation received.
 
 ### Features:
 - **Authentication:** Allows users to register with the database and access their personal data through POST requests to login.php and signup.php pages, respectively.
-[diagram here]
 - **Activity Registration:** Allows users to send project-related data they have worked on through a POST request to the activity.php page.
-[diagram here]
 - **Data Analysis and Sending:** Provides users with a report on the progress of their activities through a GET request to the activity.php page.
-[diagram here]
 
 ## Project Requirements
 ### Functional Requirements:
@@ -82,9 +79,6 @@ The web service is designed to record and, when necessary, send information rela
 - Routes testing: Hoppscotch
 - SQL Queries testing: Database Client JDBC
 - Graphic Interface testing: Sample SQL code available [here](https://github.com/mzyxnuel/TimeCode/blob/master/.tests/sample-test.sql).
-
-### Results and System Validation
-[diagram here]
 
 ## Deployment and Project Management
 Git/GitHub provided an integrated platform supporting project automation, monitoring, and management, significantly contributing to the project's success throughout its software development lifecycle.
