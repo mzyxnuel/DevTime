@@ -66,13 +66,24 @@ The web service is designed to record and, when necessary, send information rela
 - PDO
 - MySQL
 
-### Main Development Phases:
-1. **Database Design and Planning:**
-2. **XSD Schema and XJC Class Creation:**
-3. **EditorMonitor Class Creation and Application View (FXML) Creation:**
-4. **Client and Server Authentication Creation:**
-5. **API and SQL Query Creation:**
-6. **API Linking through Java Controller:**
+### Description of the Main Development Phases
+
+#### Design and Database Design:
+We start with the logical design of the database, where each table and relationship is carefully thought out to ensure a solid and scalable architecture. This step is fundamental to ensure that our system can efficiently manage data without compromising performance. Subsequently, we proceed with the physical design, where every detail is optimized to maximize database efficiency.
+
+#### Creation of XSD Schemas and XJC Classes:
+We use JAXB to create XSD schemas that clearly and precisely define the structure of XML data. This process allows us to map XML schemas to Java classes, making XML data accessible and manipulable as Java objects.
+
+#### Creation of EditorMonitor Class and Creation of View (Application FXML):
+We develop a Java class that serves as an IDE monitor for our application. For the creation of views, we adopt FXML to declaratively define the user interface, separating the application's logic from its presentation for greater clarity and maintainability.
+
+#### Creation of Client-Side and Server-Side Authentication:
+We implement robust authentication mechanisms on both the client and server sides, ensuring the security of our applications.
+
+#### Creation of API and SQL Queries:
+We develop a REST API to expose our application's services, using PDO to create SQL queries that interact effectively with the database.
+
+#### Creation of API Connection through Java Controllers.
 
 ## Testing and Validation
 ### Testing Strategy:
