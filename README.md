@@ -4,7 +4,7 @@
 TimeCode aims to enhance the efficiency and productivity of software developers by providing detailed analysis of time spent during software development. By offering a comprehensive overview of time spent on specific projects, programming languages used, and activities performed during development sessions, TimeCode provides detailed analysis to help developers better understand their work habits and adopt more efficient practices.
 
 <img src="https://i.ibb.co/7NFcHzD/Time-Code-01-04-2024-20-20-32.png" />
-<img src="https://i.ibb.co/RQtjWNP/Time-Code-01-04-2024-20-21-23.png" />
+<img src="https://i.ibb.co/TKCddB6/Time-Code-01-04-2024-20-21-23.png" />
 <img src="https://i.ibb.co/3sSwpZf/Windows-Power-Shell-01-04-2024-20-22-03.png" />
 
 ### Detailed Time Analysis:
