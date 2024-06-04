@@ -1,17 +1,17 @@
-package timecode.view;
+package devtime.view;
 
 import java.io.IOException;
 
 import atlantafx.base.theme.CupertinoDark;
+import devtime.model.local.DotEnv;
+import devtime.model.local.EditorMonitor;
+import devtime.view.local.FxmlManager;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import timecode.model.local.DotEnv;
-import timecode.model.local.EditorMonitor;
-import timecode.view.local.FxmlManager;
 
 public class App extends Application {
    private static Group root;
@@ -35,8 +35,8 @@ public class App extends Application {
 
       stage.setScene(scene);
       stage.setResizable(false);
-      stage.getIcons().add(new Image(App.class.getResourceAsStream("/icons/timecode.png")));
-      stage.setTitle("TimeCode");
+      stage.getIcons().add(new Image(App.class.getResourceAsStream("/icons/devtime.png")));
+      stage.setTitle("DevTime");
       stage.show();
    }
 

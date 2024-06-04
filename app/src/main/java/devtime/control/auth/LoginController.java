@@ -1,16 +1,16 @@
-package timecode.control.auth;
+package devtime.control.auth;
 
 import java.net.http.HttpResponse;
 
+import devtime.model.local.DotEnv;
+import devtime.model.local.MessageManager;
+import devtime.model.net.HttpHandler;
+import devtime.model.net.JAXB;
+import devtime.model.requests.Login;
+import devtime.model.responses.ResponseAuth;
+import devtime.view.App;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
-import timecode.model.local.DotEnv;
-import timecode.model.local.MessageManager;
-import timecode.model.net.HttpHandler;
-import timecode.model.net.JAXB;
-import timecode.model.requests.Login;
-import timecode.model.responses.ResponseAuth;
-import timecode.view.App;
 
 public class LoginController {
    private HttpHandler http = new HttpHandler();

@@ -5,7 +5,7 @@
 //
 
 
-package timecode.model.responses;
+package devtime.model.responses;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -25,7 +25,6 @@ import jakarta.xml.bind.annotation.XmlType;
  *     <restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       <sequence>
  *         <element name="state" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         <element name="api_key" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       </sequence>
  *     </restriction>
  *   </complexContent>
@@ -36,19 +35,13 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "state",
-    "apiKey"
+    "state"
 })
 @XmlRootElement(name = "response")
-public class ResponseAuth {
+public class ResponseState {
 
-    @XmlElement(name = "state",required = true)
+    @XmlElement(required = true)
     protected String state;
-    @XmlElement(name = "api_key", required = false)
-    protected String apiKey;
-
-    public ResponseAuth() {
-    }
 
     /**
      * Gets the value of the state property.
@@ -72,30 +65,6 @@ public class ResponseAuth {
      */
     public void setState(String value) {
         this.state = value;
-    }
-
-    /**
-     * Gets the value of the apiKey property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getApiKey() {
-        return apiKey;
-    }
-
-    /**
-     * Sets the value of the apiKey property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setApiKey(String value) {
-        this.apiKey = value;
     }
 
 }

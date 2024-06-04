@@ -1,4 +1,4 @@
-package timecode.control;
+package devtime.control;
 
 import java.net.URL;
 import java.net.http.HttpResponse;
@@ -8,6 +8,20 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import devtime.model.local.DotEnv;
+import devtime.model.local.MessageManager;
+import devtime.model.net.HttpHandler;
+import devtime.model.net.JAXB;
+import devtime.model.responses.ResponseDashboard;
+import devtime.model.responses.ResponseDashboard.DatesContainer;
+import devtime.model.responses.ResponseDashboard.LanguagesContainer;
+import devtime.model.responses.ResponseDashboard.OssContainer;
+import devtime.model.responses.ResponseDashboard.ProjectNamesContainer;
+import devtime.model.responses.ResponseDashboard.ProjectNamesContainer.ProjectContainer;
+import devtime.model.responses.ResponseDashboard.DatesContainer.DateContainer;
+import devtime.model.responses.ResponseDashboard.LanguagesContainer.LanguageContainer;
+import devtime.model.responses.ResponseDashboard.OssContainer.OsContainer;
+import devtime.view.components.SemiCircleChart;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,20 +34,6 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import timecode.model.local.DotEnv;
-import timecode.model.local.MessageManager;
-import timecode.model.net.HttpHandler;
-import timecode.model.net.JAXB;
-import timecode.model.responses.ResponseDashboard;
-import timecode.model.responses.ResponseDashboard.DatesContainer;
-import timecode.model.responses.ResponseDashboard.DatesContainer.DateContainer;
-import timecode.model.responses.ResponseDashboard.LanguagesContainer;
-import timecode.model.responses.ResponseDashboard.LanguagesContainer.LanguageContainer;
-import timecode.model.responses.ResponseDashboard.OssContainer;
-import timecode.model.responses.ResponseDashboard.OssContainer.OsContainer;
-import timecode.model.responses.ResponseDashboard.ProjectNamesContainer;
-import timecode.model.responses.ResponseDashboard.ProjectNamesContainer.ProjectContainer;
-import timecode.view.components.SemiCircleChart;
 
 public class DashboardController implements Initializable {
    HttpHandler http = new HttpHandler();

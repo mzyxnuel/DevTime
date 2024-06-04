@@ -1,16 +1,16 @@
-# TimeCode
+# DevTime
 
 ## Project Description
-TimeCode aims to enhance the efficiency and productivity of software developers by providing detailed analysis of time spent during software development. By offering a comprehensive overview of time spent on specific projects, programming languages used, and activities performed during development sessions, TimeCode provides detailed analysis to help developers better understand their work habits and adopt more efficient practices.
+DevTime aims to enhance the efficiency and productivity of software developers by providing detailed analysis of time spent during software development. By offering a comprehensive overview of time spent on specific projects, programming languages used, and activities performed during development sessions, DevTime provides detailed analysis to help developers better understand their work habits and adopt more efficient practices.
 
 <img src="https://i.ibb.co/7NFcHzD/Time-Code-01-04-2024-20-20-32.png" />
 <img src="https://i.ibb.co/TKCddB6/Time-Code-01-04-2024-20-21-23.png" />
 <img src="https://i.ibb.co/3sSwpZf/Windows-Power-Shell-01-04-2024-20-22-03.png" />
 
 ### Detailed Time Analysis:
-Through the TimeCode interface, developers can view detailed analysis of time spent on specific projects, programming languages used, and activities performed during development sessions. This enables developers to identify areas where they could improve efficiency and optimize time spent on work.
+Through the DevTime interface, developers can view detailed analysis of time spent on specific projects, programming languages used, and activities performed during development sessions. This enables developers to identify areas where they could improve efficiency and optimize time spent on work.
 
-In summary, the TimeCode project aims to provide software developers with a comprehensive tool for time tracking and analysis of work habits, helping them improve their productivity and overall performance.
+In summary, the DevTime project aims to provide software developers with a comprehensive tool for time tracking and analysis of work habits, helping them improve their productivity and overall performance.
 
 ## System Architecture
 ### Overview:
@@ -42,13 +42,13 @@ The web service is designed to record and, when necessary, send information rela
 
 ## Project Requirements
 ### Functional Requirements:
-- **Detailed Time Analysis:** TimeCode must provide developers with detailed analysis of time spent on specific projects, programming languages used, and activities performed during development sessions.
+- **Detailed Time Analysis:** DevTime must provide developers with detailed analysis of time spent on specific projects, programming languages used, and activities performed during development sessions.
 ### Non-Functional Requirements:
-- **Security:** Information collected and analyzed by TimeCode must be protected to ensure developers' data privacy and security.
+- **Security:** Information collected and analyzed by DevTime must be protected to ensure developers' data privacy and security.
 - **Scalability:** The system must be designed to support a growing number of users and data without compromising its functionality or performance.
 - **Usability:** Must offer an intuitive and easy-to-use user interface, allowing developers to easily access analyses and manage their data.
 - **Reliability:** Must ensure the accuracy and precision of the provided analyses, minimizing human error and inaccuracies in collected data.
-- **Integration:** The system must be able to easily integrate with other software development tools and platforms, allowing developers to effectively use TimeCode within their existing workflow.
+- **Integration:** The system must be able to easily integrate with other software development tools and platforms, allowing developers to effectively use DevTime within their existing workflow.
 
 ## Implementation
 ### Programming Languages, Frameworks, and Libraries Used:
@@ -89,7 +89,7 @@ We develop a REST API to expose our application's services, using PDO to create 
 ### Testing Strategy:
 - Routes testing: Hoppscotch
 - SQL Queries testing: Database Client JDBC
-- Graphic Interface testing: Sample SQL code available [here](https://github.com/mzyxnuel/TimeCode/blob/master/.tests/sample-test.sql).
+- Graphic Interface testing: Sample SQL code available [here](https://github.com/mzyxnuel/DevTime/blob/master/.tests/sample-test.sql).
 
 ## Deployment and Project Management
 Git/GitHub provided an integrated platform supporting project automation, monitoring, and management, significantly contributing to the project's success throughout its software development lifecycle.

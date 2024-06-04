@@ -3,7 +3,7 @@
     function db() {
         $user = "root";
         $password = "";
-        $db = "timecode";
+        $db = "devtime";
         $host = "localhost";
         $port = 3306;
 

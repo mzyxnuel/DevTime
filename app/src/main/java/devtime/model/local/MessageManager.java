@@ -1,9 +1,9 @@
-package timecode.model.local;
+package devtime.model.local;
 
+import devtime.view.App;
+import devtime.view.components.PopUp;
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import timecode.view.App;
-import timecode.view.components.PopUp;
 
 public class MessageManager {
    private Stage stage = App.getStage();

@@ -1,12 +1,12 @@
-package timecode.model.net;
+package devtime.model.net;
 
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import devtime.model.local.MessageManager;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
-import timecode.model.local.MessageManager;
 
 public class JAXB {
    private JAXBContext jaxb;

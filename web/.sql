@@ -1,6 +1,6 @@
-CREATE DATABASE timecode;
+CREATE DATABASE devtime;
 
-USE timecode;
+USE devtime;
 
 CREATE TABLE users(
    api_key CHAR(20) BINARY PRIMARY KEY,

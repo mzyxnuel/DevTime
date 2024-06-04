@@ -5,7 +5,7 @@
 //
 
 
-package timecode.model.requests;
+package devtime.model.requests;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -24,8 +24,6 @@ import jakarta.xml.bind.annotation.XmlType;
  *   <complexContent>
  *     <restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       <sequence>
- *         <element name="name" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         <element name="surname" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         <element name="email" type="{}emailAddress"/>
  *         <element name="password" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       </sequence>
@@ -38,79 +36,23 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "name",
-    "surname",
     "email",
     "password"
 })
-@XmlRootElement(name = "SignUp")
-public class SignUp {
+@XmlRootElement(name = "Login")
+public class Login {
 
-    @XmlElement(required = true)
-    protected String name;
-    @XmlElement(required = true)
-    protected String surname;
     @XmlElement(required = true)
     protected String email;
     @XmlElement(required = true)
     protected String password;
 
-    public SignUp() {
+    public Login() {
     }
 
-    public SignUp(String name, String surname, String email, String password) {
-        this.name = name;
-        this.surname = surname;
+    public Login(String email, String password) {
         this.email = email;
         this.password = password;
-    }
-
-    /**
-     * Gets the value of the name property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Sets the value of the name property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setName(String value) {
-        this.name = value;
-    }
-
-    /**
-     * Gets the value of the surname property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getSurname() {
-        return surname;
-    }
-
-    /**
-     * Sets the value of the surname property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setSurname(String value) {
-        this.surname = value;
     }
 
     /**

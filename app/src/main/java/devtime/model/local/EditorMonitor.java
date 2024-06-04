@@ -1,4 +1,4 @@
-package timecode.model.local;
+package devtime.model.local;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -8,13 +8,13 @@ import java.net.http.HttpResponse;
 import java.time.Instant;
 import java.util.List;
 
-import timecode.model.net.HttpHandler;
-import timecode.model.net.JAXB;
-import timecode.model.requests.Activity;
-import timecode.model.requests.Activity.FilesContainer;
-import timecode.model.requests.Activity.FilesContainer.FileContainer;
-import timecode.model.responses.ResponseState;
-import timecode.view.App;
+import devtime.model.net.HttpHandler;
+import devtime.model.net.JAXB;
+import devtime.model.requests.Activity;
+import devtime.model.requests.Activity.FilesContainer;
+import devtime.model.requests.Activity.FilesContainer.FileContainer;
+import devtime.model.responses.ResponseState;
+import devtime.view.App;
 
 public class EditorMonitor implements Runnable {
    private long startTime;

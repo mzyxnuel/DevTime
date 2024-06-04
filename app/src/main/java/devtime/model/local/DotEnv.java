@@ -1,14 +1,14 @@
-package timecode.model.local;
+package devtime.model.local;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.util.List;
 
+import devtime.view.App;
+import devtime.view.local.FxmlManager;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.github.cdimascio.dotenv.DotenvException;
 import javafx.scene.Scene;
-import timecode.view.App;
-import timecode.view.local.FxmlManager;
 
 public class DotEnv {
    private Dotenv env;

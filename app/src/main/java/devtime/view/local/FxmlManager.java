@@ -1,11 +1,11 @@
-package timecode.view.local;
+package devtime.view.local;
 
 import java.io.IOException;
 
+import devtime.model.local.MessageManager;
+import devtime.view.App;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import timecode.model.local.MessageManager;
-import timecode.view.App;
 
 public class FxmlManager {
    private FXMLLoader fx;

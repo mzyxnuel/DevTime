@@ -5,7 +5,7 @@
 //
 
 
-package timecode.model.responses;
+package devtime.model.responses;
 
 import java.util.ArrayList;
 import java.util.List;
